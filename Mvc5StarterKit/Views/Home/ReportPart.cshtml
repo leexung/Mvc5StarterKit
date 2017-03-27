@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/Izenda_Layout.cshtml";
+    ViewBag.Title = "Report Viewer";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            izendaInitReportPartExportViewer('@ViewBag.Id', '@ViewBag.Token');
+           // $('#izenda-root').children().first().removeClass('izenda');
+            //var classList = $('#izenda-root').children().first().attr('class').split(/\s+/);
+            //$.each(classList, function (index, item) {
+            //    console.log(item);
+            //});
+            
+        });
+    </script>
+}
+<style>
+    #izenda-root>.izenda {
+        background-color: transparent !important;
+    }
+</style>
+
+<div class="izenda-container" id="izenda-root" style="margin-top:0px;"></div>
+
+

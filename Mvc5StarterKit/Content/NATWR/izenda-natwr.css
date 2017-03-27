@@ -1,0 +1,82 @@
+/*overide izenda-Topmenu backkground color*/
+.izenda-TopMenu {
+  background: #ffffff !important;
+}
+
+/*overide left Sidebar backkground color*/
+.izenda-Sidebar>div {
+  background: #02107a !important;
+}
+
+/*overide izenda-TopMenu-logo*/
+.izenda-TopMenu .izenda-TopMenu-logo {
+  background: url(NauticalWear.png) left center no-repeat !important;
+}
+
+/* overide color of the line under collapsed button*/
+.izenda-Sidebar .collapsible {
+    border-bottom: 1px solid #020941 !important;
+}
+
+/*overide color the dark region besign text Report (tabs-menu-item)*/
+.izenda-Reports .tabs.left-tab .tabs-menu-item:not(.active) a, .u-bgDarkBlue
+{
+    background-color: #020941 !important;
+}
+
+/*overide color text Report */
+.izenda-Reports .tabs.left-tab .tabs-menu-item.active a {
+    background: #02107a !important;
+    color: #ffffff;
+}
+
+/*Overide color On hover or select list items on left panel */
+.izenda .category-tree .panel.active>.panel-heading, .izenda .category-tree .panel-heading:hover, .izenda .category-tree .panel-heading:hover .btn-icon {
+    background: #086c97 !important;
+    color: #fffefe !important;
+}
+
+/*Overide color On hover or select list items on top nav*/
+.izenda-TopMenu .izenda-TopMenu-nav ul>li>a.active, .izenda-TopMenu .izenda-TopMenu-nav ul>li>a:hover, .izenda-TopMenu .izenda-TopMenu-nav ul>li>a:focus {
+    color: #fff !important;
+    background-color: #1c4e89 !important;
+}
+
+/*Overide default color of list items on top nav*/
+.izenda-TopMenu .izenda-TopMenu-nav ul>li>a {
+    background-color: #02107a !important;
+    color: #999999 !important;
+}
+
+/*Overide color On hover or select list items on left panel when open report page*/
+.izenda-Sidebar .context-menu a.active, .izenda-Sidebar .context-menu a:hover, .izenda-Sidebar .context-menu a.active > i, .izenda-Sidebar .context-menu a:hover > i {
+    background-color: #086c97;
+    color: #ffffff;
+}
+/*Overide color On hover or select list horizontal right tab items on report designer page*/
+.izenda .horizontal-tabs .tabs-navigation .tabs-menu-item.active a, .izenda .horizontal-tabs .tabs-navigation .tabs-menu-item a:hover {
+    padding: 0;
+    color: #02107a;
+    border: 1px solid #DEDEDE;
+}
+
+.izenda-PropertiesEditor .title-group, .izenda .btn-primary {
+    color: #02107a;
+}
+
+.izenda .btn-primary:hover {
+    color: #ffffff !important;
+}
+
+
+/*Overie color of Starter Kit*/
+/*StarterKit Nav*/
+.navbar-inverse {
+    background-color: #02107a;
+    border-color: #080808;
+}
+/*Dropdown List*/
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus, .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus  {
+    color: #ffffff;
+    background-color: #086c97;
+}

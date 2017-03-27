@@ -1,0 +1,41 @@
+﻿@using Mvc5StarterKit.Models
+@using System.Web.Script.Serialization;
+@{
+    ViewBag.Title = "Report Parts";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            izendaInitReportPartDemo();
+        });
+    </script>
+}
+<style>
+    .report-part-chart {
+        float: left;
+        width: 40%;
+        height:  40%;
+        margin-left: 20px;
+        margin-top: 20px;
+        background-color: white;
+    }
+
+    .report-part-grid {
+        float: left;
+        width: 40%;
+        height:  50%;
+        margin-left: 20px;
+        margin-top: 20px;
+        background-color: white;
+    }
+</style>
+
+<div class="loader" id="reportPartLoader"> </div>
+<div class="izenda-container">
+    <div class="report-part-chart" id="izenda-report-part1"></div>
+    <div class="report-part-chart" id="izenda-report-part2"></div>
+    <div class="report-part-grid" id="izenda-report-part3"></div>
+</div>
+

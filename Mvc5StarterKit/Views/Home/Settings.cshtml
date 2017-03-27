@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Settings";
+}
+
+@*@section title{ Izenda }*@
+@*@section customHeader{}*@
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            izendaInitSetting();
+        });
+    </script>
+}
+
+<div class="loader" id="progressLoader"> </div>
+<div class="izenda-container" id="izenda-root"></div>

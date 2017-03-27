@@ -1,0 +1,7 @@
+﻿@model IList<Mvc5StarterKit.Models.ReportItemModel>
+
+
+@foreach (var reportItem in Model)
+{
+    <li>@Html.ActionLink(reportItem.Name, "ReportViewer", "Home", reportItem, null)</li>
+}

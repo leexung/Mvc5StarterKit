@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Report Designer";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            izendaInitReportDesigner();
+        });
+    </script>
+}
+
+<div class="loader" id="progressLoader"> </div>
+<div class="izenda-container" id="izenda-root"></div>

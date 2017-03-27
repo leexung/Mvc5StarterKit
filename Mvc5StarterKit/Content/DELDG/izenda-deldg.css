@@ -1,0 +1,75 @@
+.izenda-TopMenu {
+   background: #ffffff !important;
+}
+
+.izenda-Sidebar>div {
+   background: #424241 !important;
+}
+
+.izenda-TopMenu .izenda-TopMenu-logo {
+  background: url(DeluxDesigns.png) left center no-repeat !important;
+}
+
+@media (max-width: 1023px) {
+.izenda-TopMenu .izenda-TopMenu-logo {
+    display: none;
+  }
+}
+
+.izenda-Sidebar .collapsible {
+    border-bottom: 1px solid #1d1d1d !important;
+}
+
+.izenda-Reports .tabs.left-tab .tabs-menu-item:not(.active) a, .u-bgDarkBlue
+{
+    background-color: #1d1d1d !important;
+}
+
+.izenda-Reports .tabs.left-tab .tabs-menu-item.active a {
+    background: #424241 !important;
+    color: #ffffff;
+}
+
+.izenda .category-tree .panel.active>.panel-heading, .izenda .category-tree .panel-heading:hover, .izenda .category-tree .panel-heading:hover .btn-icon {
+    background: #424241 !important;
+    color: #fffefe !important;
+}
+
+.izenda-TopMenu .izenda-TopMenu-nav ul>li>a.active, .izenda-TopMenu .izenda-TopMenu-nav ul>li>a:hover, .izenda-TopMenu .izenda-TopMenu-nav ul>li>a:focus {
+    color: #491b1b !important;
+    background-color: #fff !important;
+}
+
+.izenda-TopMenu .izenda-TopMenu-nav ul>li>a {
+    background-color: #ffffff !important;
+    color: #080808 !important;
+}
+
+.izenda-Sidebar .context-menu a.active, .izenda-Sidebar .context-menu a:hover, .izenda-Sidebar .context-menu a.active > i, .izenda-Sidebar .context-menu a:hover > i {
+    background-color: #a33030;
+    color: #ffffff;
+}
+
+.izenda .horizontal-tabs .tabs-navigation .tabs-menu-item.active a, .izenda .horizontal-tabs .tabs-navigation .tabs-menu-item a:hover {
+    padding: 0;
+    color: #491b1b;
+    border: 1px solid #DEDEDE;
+}
+.izenda-PropertiesEditor .title-group, .izenda .btn-primary {
+    color: #491b1b;
+}
+
+.izenda .btn-primary:hover {
+    color: #ffffff !important;
+}
+
+/*Overie color of Starter Kit*/
+.navbar-inverse {
+    background-color: #491b1b;
+    border-color: #080808;
+}
+
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus, .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus  {
+    color: #ffffff;
+    background-color: #a33030;
+}

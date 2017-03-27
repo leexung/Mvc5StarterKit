@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Reports";
+}
+
+@*@section title{ Izenda }*@
+@*@section customHeader{}*@
+@section scripts
+{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            izendaInitReport();
+        });
+    </script>
+}
+
+<div class="loader" id="progressLoader"> </div>
+<div class="izenda-container" id="izenda-root"></div>
