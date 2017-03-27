@@ -14,6 +14,10 @@ using Mvc5StarterKit.Models;
 using Mvc5StarterKit.IzendaBoundary.Models;
 using log4net;
 using Mvc5StarterKit.IzendaBoundary.Models.Permissions;
+using IzendaFramework = Izenda.BI.Framework.Models.DBStructure;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Izenda.BI.Framework.Models;
 
 namespace Mvc5StarterKit.Controllers
 {
@@ -532,6 +536,46 @@ namespace Mvc5StarterKit.Controllers
             ViewBag.Id = id;
             ViewBag.Token = token;
             return View();
+        }
+
+        /// <summary>
+        /// Create a custom route to intercept login requests for the Izenda API. This is needed for the 
+        /// Izenda Copy Console as it will only authenticate against "api/user/login".
+        /// </summary>
+        /// <param name="username">the username</param>
+        /// <param name="password">the password</param>
+        /// <returns>a json result indicating success or failure</returns>
+        public ActionResult CustomAuth(string username, string password)
+        {
+            OperationResult authResult;
+            var serializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            var jsonResult = "";
+
+            //validate login (more complex logic can be added here)
+            #warning CAUTION!! Update this method to use your authentication scheme or remove it entirely if the copy console will not be used.
+            if (username == "IzendaAdmin@system.com" && password == "Izenda@123")
+            {
+                var user = new UserInfo { UserName = username, TenantUniqueName = "System" };
+                var token = IzendaTokenAuthorization.GetToken(user);
+
+                var accessToken = new IzendaFramework.AccessToken
+                {
+                    CultureName = "en-US",
+                    Tenant = null,
+                    IsExpired = false,
+                    NotifyDuringDay = null,
+                    DateFormat = "DD/MM/YYYY",
+                    Token = token
+                };
+
+                authResult = new OperationResult { Success = true, Messages = null, Data = accessToken };
+                jsonResult = JsonConvert.SerializeObject(authResult, serializerSettings);
+                return Content(jsonResult, "application/json");
+            }
+
+            authResult = new OperationResult { Success = false, Messages = null, Data = null };
+            jsonResult = JsonConvert.SerializeObject(authResult, serializerSettings);
+            return Content(jsonResult, "application/json");
         }
         #endregion
     }
