@@ -7,9 +7,6 @@ bin
 *.LOCAL
 *.REMOTE
 /Mvc5StarterKit/packages
-/Mvc5StarterKit/IzendaReferences
-/Mvc5StarterKit/IzendaResources
-/Mvc5StarterKit/Scripts/izenda
 /Mvc5StarterKit/logs
 
 # User-specific files
