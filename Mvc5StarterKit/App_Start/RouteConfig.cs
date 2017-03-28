@@ -12,8 +12,6 @@ namespace Mvc5StarterKit
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            routes.IgnoreRoute("api/{*pathInfo}");
-
             routes.MapMvcAttributeRoutes();
 
             routes.MapRoute(
@@ -21,6 +19,14 @@ namespace Mvc5StarterKit
                 url: "viewer/reportpart/{id}",
                 defaults: new { controller = "Home", action = "ReportPart" }
             );
+
+            routes.MapRoute(
+               name: "CustomAuth",
+               url: "api/user/login",
+               defaults: new { controller = "Home", action = "CustomAuth" }
+           );
+
+            routes.IgnoreRoute("api/{*pathInfo}");
 
             routes.MapRoute(
                 name: "Default",
