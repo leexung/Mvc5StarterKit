@@ -61,7 +61,7 @@ mvc5starterkit\mvc5starterkit\izendaboundary\customadhocreport.cs
 This is where you can find samples for:
 Hidden Filters
 Filter Dropdown Overrides
-See more information here: https://www.izenda.com/wiki7/index.php?title=Ref:IAdHocExtension
+See more information here: <a href="https://www.izenda.com/wiki7/dev/ref_iadhocextension.html?highlight=iadhocextension" /> All About IAdhocExtension, Hidden Filters, and Filter Dropdown Overrides </a>
 
 
 The CSS can be configured per tenant and an example is provided see below:
