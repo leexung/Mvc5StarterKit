@@ -5,6 +5,7 @@ The MVC5 Starterkit showcases how to embed Izenda in a MVC5 application.
 
  :warning: The MVC Kit is designed for demonstration purposes and should not be used as an “as-is” fully-integrated solution. You can use the kit for reference or a baseline but ensure that security and customization meet the standards of your company.
  
+## Getting Started 
  Download the v1.24.4 (https://downloads.izenda.com/v1.24.4/) of the API and EmbeddedUI and copy the following:
 
 All files & folders in API\bin -> Mvc5StarterKit\IzendaReferences
@@ -36,6 +37,7 @@ After start up and logging in as Admin Go to Settings on top Nav
 - For each Role in the tenant set datamodel access (what tables / views each role can access)
   More Info here: <a href = "https://www.izenda.com/wiki7/ui/doc_role_setup.html?highlight=role%20setup" /> How To Set Up A Role</a>
 
+### Tenants, Users, and Roles
 For each Tenant the following users / roles are configured all use the same password: Izenda@123
 
 Tenant: DELDG <br />
