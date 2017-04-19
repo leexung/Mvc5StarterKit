@@ -20,13 +20,13 @@ Run Application and login by System Admin Account below:
 After start up and logging in as Admin Go to Settings on top Nav
 - Add Izenda License Key and Token (leave Izenda Configuration Database Connection string set this is using an MDF file included in this kit)
 - Go to Data Setup > Connection String  add the connection string to the Retail database created above for system and all tenants and move tables/views to visible
-   More Info here: https://www.izenda.com/wiki7/index.php?title=Doc:Connection_String
+   More Info here: https://www.izenda.com/docs/ui/doc_connection_string.html
 - In Data Setup > Advanced Settings > Security Set the Tenant Field to [CustomerID] (please ensure you use the brackets) for each Tenant / CustomerID in the Retail Database are the tenants  (DELDG/NATWR/RETCL) and this will filter data
    based on the current user's TenantID
-   More Info here: https://www.izenda.com/wiki7/index.php?title=Doc:Advanced_Settings#Update_settings_in_Performance.2C_Security.2FAdditive_Fields_and_Others_group
+   More Info here: https://www.izenda.com/docs/ui/doc_advanced_settings.html
 
 - For each Role in the tenant set datamodel access (what tables / views each role can access)
-  More Info here: https://www.izenda.com/wiki7/index.php?title=Doc:Role_Setup
+  More Info here: https://www.izenda.com/docs/ui/doc_role_setup.html
 
 For each Tenant the following users / roles are configured all use the same password: Izenda@123
 
@@ -54,7 +54,7 @@ mvc5starterkit\mvc5starterkit\izendaboundary\customadhocreport.cs
 This is where you can find samples for:
 Hidden Filters
 Filter Dropdown Overrides
-See more information here: https://www.izenda.com/wiki7/index.php?title=Ref:IAdHocExtension
+See more information here: https://www.izenda.com/docs/dev/ref_iadhocextension.html
 
 
 The CSS can be configured per tenant and an example is provided see below:
