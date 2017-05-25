@@ -242,6 +242,9 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Security">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Security.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -419,6 +422,7 @@
     <Compile Include="IzendaBoundary\Models\RoleDetail.cs" />
     <Compile Include="IzendaBoundary\Models\TenantsModel.cs" />
     <Compile Include="IzendaBoundary\Models\UserDetail.cs" />
+    <Compile Include="IzendaBoundary\StringCipher.cs" />
     <Compile Include="IzendaBoundary\WebAPIService.cs" />
     <Compile Include="IzendaConfig.cs" />
     <Compile Include="Managers\TenantManager.cs" />
