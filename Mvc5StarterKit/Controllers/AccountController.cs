@@ -165,6 +165,7 @@ namespace Mvc5StarterKit.Controllers
             {
                 var tenant = new Tenant { Name = model.Tenant };
                 var tenantManager = new Managers.TenantManager();
+                var roleName = IsSystemTenant(tenant.Name) ? "Administrator" : "Manager";
                 var exstingTenant = tenantManager.GetTenantByName(model.Tenant);
 
                 if (exstingTenant != null)
@@ -175,24 +176,28 @@ namespace Mvc5StarterKit.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Tenant_Id = tenant.Id };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 //This line below will hard code users who register to a role of Manager and can be changed by altering the role below
-                await UserManager.AddToRoleAsync(user.Id, "Manager");
+                await UserManager.AddToRoleAsync(user.Id, roleName);
                 if (result.Succeeded)
                 {
                     //izenda
 
                     //determine tenant
-                    var izendaTenant = new Tenants();
-                    izendaTenant.Active = true;
-                    izendaTenant.Deleted = false;
+                    Tenants izendaTenant = null;
+                    if (!IsSystemTenant(tenant.Name))
+                    {
+                        izendaTenant = new Tenants();
+                        izendaTenant.Active = true;
+                        izendaTenant.Deleted = false;
 
-                    //var currentUserTenant = ParseTenantFromEmail(izendaTenant.Name);
-                    izendaTenant.Name = tenant.Name;
-                    izendaTenant.TenantID = tenant.Name;
+                        izendaTenant.Name = tenant.Name;
+                        izendaTenant.TenantID = tenant.Name;
+                        TenantIntegrationConfig.AddOrUpdateTenant(izendaTenant);
+                    }
 
                     //determine roles
                     var roleDetail = new RoleDetail()
                     {
-                        Name = "Administrator",
+                        Name = roleName,
                         TenantUniqueName = tenant.Name,
                         Active = true,
                         Permission = new Izenda.BI.Framework.Models.Permissions.Permission(),
@@ -204,10 +209,10 @@ namespace Mvc5StarterKit.Controllers
                         EmailAddress = model.Email,
                         FirstName = "John", //todo fix this
                         LastName = "Doe",
-                        TenantDisplayId = tenant.Name,
+                        TenantDisplayId = izendaTenant?.Name,
+                        SystemAdmin = IsSystemTenant(tenant.Name),
                         Deleted = false,
                         Active = true,
-                        SystemAdmin = false,
                         Roles = new List<Role>()
                     };
 
@@ -216,7 +221,6 @@ namespace Mvc5StarterKit.Controllers
                         Name = roleDetail.Name
                     });
 
-                    TenantIntegrationConfig.AddOrUpdateTenant(izendaTenant);
                     RoleIntegrationConfig.AddOrUpdateRole(roleDetail);
                     UserIntegrationConfig.AddOrUpdateUser(izendaUser);
 
@@ -237,6 +241,11 @@ namespace Mvc5StarterKit.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        private bool IsSystemTenant(string tenantName)
+        {
+            return tenantName.Equals("System", StringComparison.InvariantCultureIgnoreCase);
         }
 
         private string ParseTenantFromEmail(string email)
