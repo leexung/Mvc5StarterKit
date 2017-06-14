@@ -540,12 +540,12 @@
     <Content Include="Views\Home\ReportPart.cshtml" />
     <Content Include="Views\Shared\Izenda_Layout.cshtml" />
     <Content Include="Views\Home\ReadMe.cshtml" />
+    <Content Include="Views\Dashboard\DashboardViewer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IzendaReferences\" />
     <Folder Include="IzendaResources\" />
     <Folder Include="Scripts\izenda\" />
-    <Folder Include="Views\Dashboard\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
@@ -611,8 +611,10 @@
   <PropertyGroup>
     <PostBuildEvent>XCOPY /S /I /Y  "$(ProjectDir)IzendaResources\Content" "$(ProjectDir)\bin\Content\"
 XCOPY /S /I /Y  "$(ProjectDir)IzendaResources\EmailTemplates" "$(ProjectDir)\bin\EmailTemplates\"
+
 XCOPY /S /I /Y  "$(ProjectDir)IzendaResources\Export" "$(ProjectDir)\bin\Export\"
-</PostBuildEvent>
+
+XCOPY /S /I /Y "$(ProjectDir)IzendaReferences\Resources" "$(ProjectDir)\bin\Resources\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
