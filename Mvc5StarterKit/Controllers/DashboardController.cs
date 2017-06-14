@@ -9,9 +9,10 @@ namespace Mvc5StarterKit.Controllers
     public class DashboardController : Controller
     {
         // GET: DashboardViewer
-        public ActionResult DashboardViewer()
+        public ActionResult DashboardViewer(string id)
         {
-            throw new NotImplementedException("This feature is developing");
+            ViewBag.Id = id;
+            return View();
         }
     }
 }

@@ -26,7 +26,6 @@ namespace Mvc5StarterKit
                 defaults: new { controller = "Report", action = "ReportViewer" }
             );
 
-            //TODO: DashboardViewer feature is developing for embeded ui
             routes.MapRoute(
                 name: "DashboardViewer",
                 url: "dashboard/view/{id}",
