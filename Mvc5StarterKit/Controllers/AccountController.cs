@@ -472,6 +472,11 @@ namespace Mvc5StarterKit.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            var username = User.Identity.GetUserName();
+            var identity = (ClaimsIdentity)User.Identity;
+            var tenantName = identity.FindFirstValue("tenantName");
+
+            UserIntegrationConfig.LogOff(username, tenantName);
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }
