@@ -157,6 +157,19 @@ var izendaInitDashboard = function () {
 
 };
 
+// Render dashboard viewer to a <div> tag by dashboard id
+var izendaInitDashboardViewer = function (dashboardId) {
+    function successFunc(data, status) {
+        var currentUserContext = {
+            token: data.token
+        };
+        IzendaSynergy.setCurrentUserContext(currentUserContext);
+        IzendaSynergy.renderDashboardViewerPage(document.getElementById('izenda-root'), dashboardId);
+    }
+
+    this.DoRender(successFunc);
+};
+
 var izendaInitReportDesigner = function () {
 
     function successFunc(data, status) {
