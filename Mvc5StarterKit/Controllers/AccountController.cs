@@ -476,7 +476,7 @@ namespace Mvc5StarterKit.Controllers
             var identity = (ClaimsIdentity)User.Identity;
             var tenantName = identity.FindFirstValue("tenantName");
 
-            UserIntegrationConfig.LogOff(username, null, tenantName);
+            UserIntegrationConfig.LogOff(username, tenantName);
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }
