@@ -42,8 +42,6 @@ namespace Mvc5StarterKit
 
         public async Task<ApplicationUser> FindTenantUserAsync(string tenant, string username, string password)
         {
-            var passwordStore = Store as IUserPasswordStore<ApplicationUser>;
-
             var context = ApplicationDbContext.Create();
 
             var user = await context.Users
@@ -51,8 +49,6 @@ namespace Mvc5StarterKit
                 .Where(x => x.UserName.Equals(username, StringComparison.InvariantCultureIgnoreCase))
                 .Where(x=> x.Tenant.Name.Equals(tenant, StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync();
-
-            //var user = users.FirstOrDefault();
 
             if (await CheckPasswordAsync(user, password))
                 return user;
