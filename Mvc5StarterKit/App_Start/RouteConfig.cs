@@ -38,7 +38,7 @@ namespace Mvc5StarterKit
                defaults: new { controller = "Home", action = "CustomAuth" }
            );
 
-            routes.IgnoreRoute("api/{*pathInfo}");
+            routes.IgnoreRoute("izapi/{*pathInfo}");
 
             routes.MapRoute(
                 name: "Default",

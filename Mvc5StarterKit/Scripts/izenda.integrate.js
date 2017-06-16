@@ -1,5 +1,5 @@
 ﻿var DoIzendaConfig = function () {
-    var hostApi = location.protocol + '//' + location.host + "/api/";
+    var hostApi = location.protocol + '//' + location.host + "/izapi/";
     var configJson = {
         "WebApiUrl": hostApi,
         "BaseUrl": "/izenda",
