@@ -21,6 +21,8 @@ namespace Mvc5StarterKit
             {
                 var token = args.AccessToken;
                 var user = IzendaBoundary.IzendaTokenAuthorization.GetUserInfo(token);
+
+                // TenantUniqueName corresponds to the 'TenantID' field in the IzendaTenant table
                 return new ValidateTokenResult { UserName = user.UserName, TenantUniqueName = user.TenantUniqueName };
             };
         }
