@@ -8,6 +8,7 @@ namespace Mvc5StarterKit
     {
         public static void RegisterLoginLogic()
         {
+            //This is used for exporting only
             UserIntegrationConfig.GetAccessToken = (args) =>
             {
                 return IzendaBoundary.IzendaTokenAuthorization.GetToken(new Models.UserInfo()
