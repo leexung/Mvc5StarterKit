@@ -363,6 +363,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IzendaBoundary\CustomAdhocReport.cs" />
+    <Compile Include="IzendaBoundary\IzendaCustomBootstrap.cs" />
     <Compile Include="IzendaBoundary\IzendaTokenAuthorization.cs" />
     <Compile Include="IzendaBoundary\IzendaUtility.cs" />
     <Compile Include="IzendaBoundary\Models\ConnectionDetail.cs" />
