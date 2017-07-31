@@ -242,6 +242,9 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Security">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Security.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -355,6 +358,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -420,6 +424,7 @@
     <Compile Include="IzendaBoundary\Models\RoleDetail.cs" />
     <Compile Include="IzendaBoundary\Models\TenantsModel.cs" />
     <Compile Include="IzendaBoundary\Models\UserDetail.cs" />
+    <Compile Include="IzendaBoundary\StringCipher.cs" />
     <Compile Include="IzendaBoundary\WebAPIService.cs" />
     <Compile Include="IzendaConfig.cs" />
     <Compile Include="Managers\TenantManager.cs" />
@@ -536,6 +541,7 @@
     <Content Include="Views\Home\ReportPart.cshtml" />
     <Content Include="Views\Shared\Izenda_Layout.cshtml" />
     <Content Include="Views\Home\ReadMe.cshtml" />
+    <Content Include="Views\Dashboard\DashboardViewer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IzendaReferences\" />
@@ -550,9 +556,6 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201611282113545_InitialCreate.resx">
@@ -609,8 +612,10 @@
   <PropertyGroup>
     <PostBuildEvent>XCOPY /S /I /Y  "$(ProjectDir)IzendaResources\Content" "$(ProjectDir)\bin\Content\"
 XCOPY /S /I /Y  "$(ProjectDir)IzendaResources\EmailTemplates" "$(ProjectDir)\bin\EmailTemplates\"
+
 XCOPY /S /I /Y  "$(ProjectDir)IzendaResources\Export" "$(ProjectDir)\bin\Export\"
-</PostBuildEvent>
+
+XCOPY /S /I /Y "$(ProjectDir)IzendaReferences\Resources" "$(ProjectDir)\bin\Resources\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

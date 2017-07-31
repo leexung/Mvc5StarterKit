@@ -21,6 +21,18 @@ namespace Mvc5StarterKit
             );
 
             routes.MapRoute(
+                name: "ReportViewer",
+                url: "report/view/{id}",
+                defaults: new { controller = "Report", action = "ReportViewer" }
+            );
+
+            routes.MapRoute(
+                name: "DashboardViewer",
+                url: "dashboard/edit/{id}",
+                defaults: new { controller = "Dashboard", action = "DashboardViewer" }
+            );
+
+            routes.MapRoute(
                name: "CustomAuth",
                url: "api/user/login",
                defaults: new { controller = "Home", action = "CustomAuth" }

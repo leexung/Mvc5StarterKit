@@ -14,7 +14,8 @@
             "ReportViewerPopup": "reportviewerpopup",
             "Viewer": "viewer"
         },
-        "Timeout": 3600
+        "Timeout": 3600,
+        "OnReceiveUnauthorizedResponse": OnReceiveUnauthorizedResponse
     };
     IzendaSynergy.config(configJson);
 
@@ -28,6 +29,12 @@ function errorFunc() {
         // user clicked "cancel"
     });
 }
+
+//This function will be executed when a request receive an 401 response 
+var OnReceiveUnauthorizedResponse = function (message) {
+    //Redirect users back to their home page
+    location = location.protocol + '//' + location.host;
+};
 
 var DoRender = function (successFunc) {
     $.ajax({
@@ -155,6 +162,19 @@ var izendaInitDashboard = function () {
 
     this.DoRender(successFunc);
 
+};
+
+// Render dashboard viewer to a <div> tag by dashboard id
+var izendaInitDashboardViewer = function (dashboardId) {
+    function successFunc(data, status) {
+        var currentUserContext = {
+            token: data.token
+        };
+        IzendaSynergy.setCurrentUserContext(currentUserContext);
+        IzendaSynergy.renderDashboardViewerPage(document.getElementById('izenda-root'), dashboardId);
+    }
+
+    this.DoRender(successFunc);
 };
 
 var izendaInitReportDesigner = function () {
