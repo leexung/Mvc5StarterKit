@@ -237,6 +237,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.DirectoryServices.Protocols" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -369,6 +372,7 @@
     <Compile Include="IzendaBoundary\CustomAdhocReport.cs" />
     <Compile Include="IzendaBoundary\IzendaTokenAuthorization.cs" />
     <Compile Include="IzendaBoundary\IzendaUtility.cs" />
+    <Compile Include="IzendaBoundary\LDAPService.cs" />
     <Compile Include="IzendaBoundary\Models\ConnectionDetail.cs" />
     <Compile Include="IzendaBoundary\Models\ConnectionModel.cs" />
     <Compile Include="IzendaBoundary\Models\DBSourceModel.cs" />
@@ -584,7 +588,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>14809</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

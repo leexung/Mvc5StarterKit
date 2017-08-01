@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Mvc5StarterKit.Models;
+using Mvc5StarterKit.IzendaBoundary;
 
 namespace Mvc5StarterKit
 {
@@ -60,7 +61,16 @@ namespace Mvc5StarterKit
             return null;
         }
 
-
+        public async Task<ApplicationUser> FindADUserAsync(string username, string password)
+        {
+            var context = ApplicationDbContext.Create();
+            var user = await context.Users
+                .Where(x => x.UserName.Equals(username, StringComparison.InvariantCultureIgnoreCase))
+                .SingleOrDefaultAsync();
+            if (LDAPService.Authenticate(username, password))
+                return user;
+            return null;
+        }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
@@ -116,6 +126,24 @@ namespace Mvc5StarterKit
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager)
         {
+        }
+
+        public async Task<bool> ADSigninAsync(string username, string password, bool remember)
+        {
+            var user = await (this.UserManager as ApplicationUserManager).FindADUserAsync(username, password);
+            if (user != null)
+            {
+                var identity = new ClaimsIdentity(DefaultAuthenticationTypes.ApplicationCookie);
+                identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+
+                var role = (await UserManager.GetRolesAsync(user.Id)).FirstOrDefault();
+                identity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+                AuthenticationManager.SignIn(identity);
+
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> PasswordSigninAsync(string tenant, string username, string password, bool remember)

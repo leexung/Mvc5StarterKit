@@ -77,10 +77,20 @@ namespace Mvc5StarterKit.Controllers
                 return View(model);
             }
 
+            //accountName is in the format: domain\username
+            var s = model.AccountName.Split('\\');
+            if (s.Count() != 2)
+            {
+                ModelState.AddModelError("", "Invalid Account Name format.");
+                return View(model);
+            }
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSigninAsync(model.Tenant, model.Email, model.Password, model.RememberMe);
-            if(result)
+            //var result = await SignInManager.PasswordSigninAsync(model.Tenant, model.Email, model.Password, model.RememberMe);
+            var result = await SignInManager.ADSigninAsync(model.AccountName, model.Password, model.RememberMe);
+
+            if (result)
                 return RedirectToLocal(returnUrl);
             else
             {

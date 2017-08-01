@@ -48,9 +48,11 @@ namespace Mvc5StarterKit.Models
 
     public class LoginViewModel
     {
-        [Required]
+        [Display(Name = "AccountName")]
+        public string AccountName { get; set; }
+
         public string Tenant { get; set; }
-        [Required]
+
         [Display(Name = "Email")]
         [EmailAddress]
         public string Email { get; set; }
