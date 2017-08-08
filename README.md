@@ -6,7 +6,7 @@ The MVC5 Starterkit showcases how to embed Izenda in a MVC5 application.
  :warning: **The MVC Kit is designed for demonstration purposes and should not be used as an “as-is” fully-integrated solution. You can use the kit for reference or a baseline but ensure that security and customization meet the standards of your company.**
  
 ## Getting Started 
- Download the v1.24.4 (https://downloads.izenda.com/v1.24.4/) of the API and EmbeddedUI and copy the following:
+ Download the v2.3.1 (https://downloads.izenda.com/v2.3.1/) of the API and EmbeddedUI and copy the following:
 
 All files & folders in API\bin -> Mvc5StarterKit\IzendaReferences
 
@@ -81,7 +81,7 @@ This is the database for the Izenda configuration. It contains report definition
 - Modify the <a href="https://github.com/Izenda7Series/Mvc5StarterKit/blob/master/Mvc5StarterKit/izendadb.config">izendadb.config</a> file with a valid connection string to this new database.
 
 ```json
-{"ServerTypeId":"572bd576-8c92-4901-ab2a-b16e38144813","ServerTypeName":"[MSSQL] SQLServer","ConnectionString":"[your connection string here]","ConnectionId":"00000000-0000-0000-0000-000000000000"}
+{"ServerTypeId":"572bd576-8c92-4901-ab2a-b16e38144813","ServerTypeName":"[MSSQL] SQLServer","ConnectionString":"[Your Izenda Configuration Database Connection String Here]","ConnectionId":"00000000-0000-0000-0000-000000000000"}
 
 ``` 
 
@@ -93,7 +93,7 @@ This is the database for the Mvc5 application. It contains the users, roles, ten
 
 ```xml
   <connectionStrings>
-    <add name="DefaultConnection" connectionString="[your connection string here]" providerName="System.Data.SqlClient" />
+    <add name="DefaultConnection" connectionString="[your MVC Database Connection String here]" providerName="System.Data.SqlClient" />
   </connectionStrings>
 ``` 
 
