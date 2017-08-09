@@ -77,7 +77,7 @@ The MVC5Starterkit is pre-set to use locally installed instances of SQL LocalDB 
 ### Creating the Izenda database
 This is the database for the Izenda configuration. It contains report definitions, dashboards,etc.
 - Create a database named 'IzendaMVC'. You may use any name of your choosing, just be sure to modify the script below to use the new database name.
-- Download and execute the <a href="https://github.com/Izenda7Series/Mvc5StarterKit/blob/master/SQLScript/MSSQL/IzendaMvc.sql">IzendaMVC.sql</a> script.  
+- Download and execute the <a href="https://github.com/Izenda7Series/Mvc5StarterKit/blob/master/SQLScript/MSSQL/IzendaMVC.sql">IzendaMVC.sql</a> script.  
 - Modify the <a href="https://github.com/Izenda7Series/Mvc5StarterKit/blob/master/Mvc5StarterKit/izendadb.config">izendadb.config</a> file with a valid connection string to this new database.
 
 ```json
