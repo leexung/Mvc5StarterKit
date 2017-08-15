@@ -138,7 +138,11 @@ namespace Mvc5StarterKit
                 identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
 
                 var role = (await UserManager.GetRolesAsync(user.Id)).FirstOrDefault();
-                identity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+                if(role != null)
+                {
+                    identity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+                }
+                
                 AuthenticationManager.SignIn(identity);
 
                 return true;
