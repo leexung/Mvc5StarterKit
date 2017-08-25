@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <ApplicationInsightsResourceId>/subscriptions/28e4678a-c56f-4c5d-9164-85cc4793d360/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/Mvc5StarterKit</ApplicationInsightsResourceId>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -367,7 +368,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IzendaBoundary\CustomAdhocReport.cs" />
-    <Compile Include="IzendaBoundary\IzendaCustomBootstrap.cs" />
     <Compile Include="IzendaBoundary\IzendaTokenAuthorization.cs" />
     <Compile Include="IzendaBoundary\IzendaUtility.cs" />
     <Compile Include="IzendaBoundary\Models\ConnectionDetail.cs" />
