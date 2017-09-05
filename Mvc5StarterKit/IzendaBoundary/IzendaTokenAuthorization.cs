@@ -9,7 +9,9 @@ namespace Mvc5StarterKit.IzendaBoundary
 {
     public class IzendaTokenAuthorization
     {
-        const string KEY = "THISISKEY";
+        #warning Change this key!!!
+        const string KEY = "THISISKEY1234567"; //must be at least 16 characters long (128 bits)
+
         /// <summary>
         /// Generate token from UserInfo. Userinfo will be encrypted before sending to Izenda.
         /// </summary>
@@ -17,7 +19,7 @@ namespace Mvc5StarterKit.IzendaBoundary
         /// <returns></returns>
         public static string GetToken(UserInfo user)
         {
-            /// remove tenant property when sending token to Izenda, if Tenant is System.
+            // remove tenant property when sending token to Izenda, if Tenant is System.
             if (user.TenantUniqueName == "System")
                 user.TenantUniqueName = null;
 

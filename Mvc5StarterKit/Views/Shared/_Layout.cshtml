@@ -1,20 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
-@using Mvc5StarterKit.Models
-@{
+﻿@using Mvc5StarterKit.Managers
 
-    //Using tenantId, identify location of folder where the css resides for the given tenant and build path to CSS.
-    var currentTenant = User.Identity != null ? ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirstValue("tenantName") : null;
-    var izendaCssPath = currentTenant == null ? "" : string.Format("/Content/{0}/izenda-{1}.css", currentTenant.ToString().ToUpper(), currentTenant.ToString().ToLower());
-
-    if(!string.IsNullOrWhiteSpace(izendaCssPath))
-    {
-        if (!File.Exists(Server.MapPath(izendaCssPath)))
-        {
-            izendaCssPath = string.Empty;
-        }
-    }
-
-}
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,12 +13,12 @@
     <link href="~/Scripts/izenda/izenda-ui.css" rel="stylesheet"> 
     
     @*Add Custom CSS based on the tenantId and path set in izendaCssPath above *@
-    <link href=@izendaCssPath rel="stylesheet">
+    <link href=@IzendaSkinHelper.GetCurrentTenantCssPath() rel="stylesheet">
 
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
@@ -47,6 +32,7 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("ReadMe", "ReadMe", "Home")</li>
                     <li>@Html.ActionLink("API", "API", "Home")</li>
+                    <li>@Html.ActionLink("AD Sync", "Index", "ADSync")</li>
                     
                     @* #izenda *@
                     <li>@Html.ActionLink("Izenda", "Izenda", "Home")</li>
@@ -89,9 +75,7 @@
     <div class="container-fluid body-content">
         @RenderBody()
         <footer>
-            <span>&copy; @DateTime.Now.Year - Izenda </span> 
-            <br />
-            <span>version: 1.24.4</span>
+            <p>&copy; @DateTime.Now.Year - Izenda Integrated BI Platform - Version @IzendaSkinHelper.GetCurrentProductVersion()</p>
         </footer>
     </div>
 
