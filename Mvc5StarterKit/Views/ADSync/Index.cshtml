@@ -4,6 +4,8 @@
 
     var isNotLDAPAuthenticated = 
         string.IsNullOrWhiteSpace(ViewBag.AuthenticatedFailMessage);
+
+    var isGeneratedTenant = ViewBag.IzendaTenantWasGenerated != null && ViewBag.IzendaTenantWasGenerated;//avoid casting null to bool
 }
 
 <h2>@ViewBag.Title</h2>
@@ -11,7 +13,7 @@
 {
     <h4 class="text-danger">@ViewBag.AuthenticatedFailMessage</h4>
 }
-@if (ViewBag.IzendaTenantWasGenerated)
+@if (isGeneratedTenant)
 {
     <div>
         <dl class="dl-horizontal">
