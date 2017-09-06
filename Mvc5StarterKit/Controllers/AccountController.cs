@@ -11,8 +11,10 @@ using Microsoft.Owin.Security;
 using Mvc5StarterKit.Models;
 using Izenda.BI.Logic.CustomConfiguration;
 using System.Collections.Generic;
+using System.Configuration;
 using Izenda.BI.Framework.Models.DBStructure;
 using Izenda.BI.Framework.Models;
+using Mvc5StarterKit.Migrations;
 
 namespace Mvc5StarterKit.Controllers
 {
@@ -61,6 +63,7 @@ namespace Mvc5StarterKit.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            ViewBag.ConfiguredDomain = ConfigurationManager.AppSettings["LDAPName"];
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -72,6 +75,7 @@ namespace Mvc5StarterKit.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            ViewBag.ConfiguredDomain = ConfigurationManager.AppSettings["LDAPName"];
             if (!ModelState.IsValid)
             {
                 return View(model);

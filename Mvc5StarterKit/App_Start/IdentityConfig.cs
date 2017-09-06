@@ -67,7 +67,7 @@ namespace Mvc5StarterKit
             var user = await context.Users
                 .Where(x => x.UserName.Equals(username, StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync();
-            if (LDAPService.Authenticate(username, password))
+            if (LDAPService.GetInstance().Authenticate(username, password))
                 return user;
             return null;
         }

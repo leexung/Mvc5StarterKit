@@ -18,6 +18,7 @@ using IzendaFramework = Izenda.BI.Framework.Models.DBStructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Izenda.BI.Framework.Models;
+using Mvc5StarterKit.Managers;
 
 namespace Mvc5StarterKit.Controllers
 {
@@ -126,7 +127,7 @@ namespace Mvc5StarterKit.Controllers
 
             //Get the encrypted token from the configuration: izusername, iztenantname
             //Use this token when calling Izenda Rest API
-            var token = GetToken();
+            var token = IzendaTokenHelper.GetIzendaToken();
 
 
             logger.Info("----------- Start adding role -----------");
@@ -249,7 +250,7 @@ namespace Mvc5StarterKit.Controllers
 
             //Get the encrypted token from the configuration: izusername, iztenantname
             //Use this token when calling Izenda Rest API
-            var token = GetToken();
+            var token = IzendaTokenHelper.GetIzendaToken();
 
             //Get tenantId by calling API to get list of tenants then search by tenantUniqueName
             //If tenantUniqueName is not existed then throw exception.
@@ -469,25 +470,6 @@ namespace Mvc5StarterKit.Controllers
             }
 
             return result;
-        }
-
-
-        /// <summary>
-        /// Get user/pwd and tenant info from web config file to authorize with Izenda Api
-        /// In all (backend and front end) are integrated mode, authentication information will get from hosting web and send to izenda to authenticate.
-        /// In standalone mode, hosting app will need to send user/pwd to izenda to authenticate.
-        /// </summary>
-        /// <returns></returns>
-        private string GetToken()
-        {
-            var username = System.Configuration.ConfigurationManager.AppSettings["izusername"];
-            var tenantUniqueName = System.Configuration.ConfigurationManager.AppSettings["iztenantuniquename"];
-            if (string.IsNullOrEmpty(tenantUniqueName))
-            {
-                tenantUniqueName = "System";
-            }
-            var token = IzendaTokenAuthorization.GetToken(new UserInfo { UserName = username, TenantUniqueName = tenantUniqueName });
-            return token;
         }
 
         #region Izenda Actions

@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <ApplicationInsightsResourceId>/subscriptions/28e4678a-c56f-4c5d-9164-85cc4793d360/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/Mvc5StarterKit</ApplicationInsightsResourceId>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -361,6 +362,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ADSyncController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -430,6 +432,8 @@
     <Compile Include="IzendaBoundary\StringCipher.cs" />
     <Compile Include="IzendaBoundary\WebAPIService.cs" />
     <Compile Include="IzendaConfig.cs" />
+    <Compile Include="Managers\IzendaSkinHelper.cs" />
+    <Compile Include="Managers\IzendaTokenHelper.cs" />
     <Compile Include="Managers\TenantManager.cs" />
     <Compile Include="Migrations\201611282113545_InitialCreate.cs" />
     <Compile Include="Migrations\201611282113545_InitialCreate.Designer.cs">
@@ -445,7 +449,10 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ADGroup.cs" />
+    <Compile Include="Models\ADUser.cs" />
     <Compile Include="Models\APIModel.cs" />
+    <Compile Include="Models\DomainAccount.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ReportPartsModel.cs" />
@@ -545,12 +552,15 @@
     <Content Include="Views\Shared\Izenda_Layout.cshtml" />
     <Content Include="Views\Home\ReadMe.cshtml" />
     <Content Include="Views\Dashboard\DashboardViewer.cshtml" />
+    <Content Include="Views\ADSync\Index.cshtml" />
+    <Content Include="Views\ADSync\ADGroups.cshtml" />
+    <Content Include="Views\ADSync\ADUsers.cshtml" />
+    <None Include="Views\ADSync\ADUserDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IzendaReferences\" />
     <Folder Include="IzendaResources\" />
     <Folder Include="Scripts\izenda\" />
-    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

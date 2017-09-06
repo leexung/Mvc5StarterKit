@@ -1,0 +1,40 @@
+﻿@model IList<Mvc5StarterKit.Models.ADUser>
+@{
+    ViewBag.Title = "Active Directory Users";
+}
+<h3>@ViewBag.Title</h3>
+<h4>Domain Name: <span id="domain-name">@ViewBag.DomainName</span></h4>
+
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Logon Name</th>
+                    <th>User Principal Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var adUser in Model)
+            {
+                    <tr>
+                        <th scope="row">@(Model.IndexOf(adUser) + 1)</th>
+                        <td>@Html.DisplayFor(groupItem => adUser.FirstName)</td>
+                        <td>@Html.DisplayFor(groupItem => adUser.LastName)</td>
+                        <td>@Html.DisplayFor(groupItem => adUser.SamAccountName)</td>
+                        <td>@Html.DisplayFor(groupItem => adUser.UserPrincipalName)</td>
+                        <td>@Html.DisplayFor(groupItem => adUser.Description)</td>
+                        <td>
+                            @Html.ActionLink("Go to Save", "ADUserDetail", "ADSync", new { samAccountName  = adUser.SamAccountName }, new { @class= "btn btn-info" } )
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

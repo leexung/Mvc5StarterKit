@@ -1,0 +1,78 @@
+﻿@model IList<Mvc5StarterKit.Models.ADGroup>
+@{
+    ViewBag.Title = "Active Directory Groups";
+}
+<h3>@ViewBag.Title</h3>
+
+<h4>Domain Name: <span id="domain-name">@ViewBag.DomainName</span></h4>
+
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var adGroup in Model)
+                {
+                    <tr>
+                        <th scope="row">@(Model.IndexOf(adGroup) + 1)</th>
+                        <td>@adGroup.Name</td>
+                        <td>@adGroup.Description</td>
+                        <td><button class="save-as-role btn btn-default" data-save-role="@adGroup.Name">Save as Izenda Role</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Save selected group as tenant in Izenda
+            $(".save-as-role").click(function () {
+                var domainName = $("#domain-name").html();
+                var roleName = $(this).data("save-role");
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SaveIzendaRole", "ADSync")',
+                    data: { 'tenantUniqueName': domainName, 'roleName': roleName },
+                    datatype: "json",
+                    success: function (result) {
+                        if (result) {
+                            alert("Ret: " + result);
+                        } else {
+                            alert("Ret: " + result);
+                        }
+                    },
+                    error: function (jqXhr, exception) {
+                        var msg = '';
+                        if (jqXhr.status === 0) {
+                            msg = 'Not connect.\n Verify Network.';
+                        } else if (jqXhr.status == 404) {
+                            msg = 'Requested page not found. [404]';
+                        } else if (jqXhr.status == 500) {
+                            msg = 'Internal Server Error [500].';
+                        } else if (exception === 'parsererror') {
+                            msg = 'Requested JSON parse failed.';
+                        } else if (exception === 'timeout') {
+                            msg = 'Time out error.';
+                        } else if (exception === 'abort') {
+                            msg = 'Ajax request aborted.';
+                        } else {
+                            msg = 'Uncaught Error.\n' + jqXhr.responseText;
+                        }
+                        alert(msg);
+                    }
+                });
+            });
+
+        });
+    </script>
+}

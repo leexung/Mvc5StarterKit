@@ -1,0 +1,95 @@
+﻿@model Mvc5StarterKit.Models.ADUser
+@{
+    ViewBag.Title = "Active Directory User Detail";
+}
+<h3>@ViewBag.Title</h3>
+<h4>Domain Name: <span id="domain-name">@Model.DomainName</span></h4>
+
+@using (Html.BeginForm("SaveIzendaUser", "ADSync", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.FirstName)
+                @Html.HiddenFor(model => model.FirstName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.LastName)
+                @Html.HiddenFor(model => model.LastName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.SamAccountName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.SamAccountName)
+                @Html.HiddenFor(model => model.SamAccountName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.UserPrincipalName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.UserPrincipalName)
+                @Html.HiddenFor(model => model.UserPrincipalName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.DistinguishedName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DistinguishedName)
+                @Html.HiddenFor(model => model.DistinguishedName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+                @Html.HiddenFor(model => model.Description)
+            </dd>
+
+            @Html.HiddenFor(model => model.DomainName)
+        </dl>
+    </div>
+    <h4>Groups:</h4>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Groups.Count; i++)
+                    {
+                        <tr>
+                            <th scope="row">@(i + 1)</th>
+                            <td>
+                                @Model.Groups[i].Name
+                                @Html.HiddenFor(m => Model.Groups[i].Name)
+                            </td>
+                            <td>@Model.Groups[i].Description</td>
+                            <td>@Html.CheckBoxFor(m => Model.Groups[i].IsSelected)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <button type="submit" class="btn btn-default pull-right">Save as Izenda User</button>
+        </div>
+    </div>
+}
