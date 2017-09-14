@@ -14,17 +14,7 @@ namespace Mvc5StarterKit.Models
 
         [Required]
         [Display(Name = "Password")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
-
-        public QueryType QueryType { get; set; }
-    }
-
-    public enum QueryType
-    {
-        SaveTenant = 0,
-
-        Group = 1,
-
-        User = 2
     }
 }

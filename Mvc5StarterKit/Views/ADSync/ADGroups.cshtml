@@ -33,46 +33,82 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            // Save selected group as tenant in Izenda
-            $(".save-as-role").click(function () {
-                var domainName = $("#domain-name").html();
-                var roleName = $(this).data("save-role");
+        function CheckResponseStatus(jqXhr, exception) {
+            var msg = '';
+            if (jqXhr.status === 0) {
+                msg = 'Not connect.\n Verify Network.';
+            } else if (jqXhr.status === 404) {
+                msg = 'Requested page not found. [404]';
+            } else if (jqXhr.status === 500) {
+                msg = 'Internal Server Error [500].';
+            } else if (exception === 'parsererror') {
+                msg = 'Requested JSON parse failed.';
+            } else if (exception === 'timeout') {
+                msg = 'Time out error.';
+            } else if (exception === 'abort') {
+                msg = 'Ajax request aborted.';
+            } else {
+                msg = 'Uncaught Error.\n' + jqXhr.responseText;
+            }
+            alertify.alert("Active Directory Sync", msg);
+        };
 
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("SaveIzendaRole", "ADSync")',
-                    data: { 'tenantUniqueName': domainName, 'roleName': roleName },
-                    datatype: "json",
-                    success: function (result) {
-                        if (result) {
-                            alert("Ret: " + result);
-                        } else {
-                            alert("Ret: " + result);
-                        }
-                    },
-                    error: function (jqXhr, exception) {
-                        var msg = '';
-                        if (jqXhr.status === 0) {
-                            msg = 'Not connect.\n Verify Network.';
-                        } else if (jqXhr.status == 404) {
-                            msg = 'Requested page not found. [404]';
-                        } else if (jqXhr.status == 500) {
-                            msg = 'Internal Server Error [500].';
-                        } else if (exception === 'parsererror') {
-                            msg = 'Requested JSON parse failed.';
-                        } else if (exception === 'timeout') {
-                            msg = 'Time out error.';
-                        } else if (exception === 'abort') {
-                            msg = 'Ajax request aborted.';
-                        } else {
-                            msg = 'Uncaught Error.\n' + jqXhr.responseText;
-                        }
-                        alert(msg);
+        function SaveIzendaRole(domainName, roleName, isInIzendaFunc) {
+            //Post ADSync/SaveIzendaRole
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveIzendaRole", "ADSync")',
+                data: { 'tenantUniqueName': domainName, 'roleName': roleName },
+                datatype: "json",
+                success: function (result) {
+                    if (result) {
+                        isInIzendaFunc(true);
+                        alertify.alert("Active Directory Sync", "Save role " + roleName + " successfully");
+                    } else {
+                        isInIzendaFunc(false);
+                        alertify.alert("Active Directory Sync", "Failed to save role " + roleName + ". Check log files error.");
                     }
-                });
+                },
+                error: function (jqXhr, exception) {
+                    CheckResponseStatus(jqXhr, exception);
+                }
             });
+        }
 
+        function CheckExistingAndSaveIzendaRole(domainName, roleName, isInIzendaFunc) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("CheckExistingRole", "ADSync")',
+                data: { 'tenantUniqueName': domainName, 'roleName': roleName },
+                datatype: "json",
+                success: function (result) {
+                    if (!result) {
+                        SaveIzendaRole(domainName, roleName, isInIzendaFunc);
+                    } else {
+                        isInIzendaFunc(true);
+                        alertify.alert("Active Directory Sync", "The role " + roleName + " is already existing in Izenda DB");
+                    }
+                },
+                error: function (jqXhr, exception) {
+                    CheckResponseStatus(jqXhr, exception);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // Save selected group as tenant in Izenda
+            $(".save-as-role").click(function() {
+                var domainName = $("#domain-name").html();
+                var button = $(this);
+                var roleName = button.data("save-role");
+
+                function isInIzendaFunc(result) {
+                    if (result) {
+                        button.prop('disabled', result);
+                    }
+                }
+                CheckExistingAndSaveIzendaRole(domainName, roleName, isInIzendaFunc);
+            });
         });
     </script>
 }

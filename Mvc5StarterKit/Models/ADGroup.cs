@@ -19,6 +19,5 @@ namespace Mvc5StarterKit.Models
         /// The flag is used on mvc page to identify the group is whether selected or not
         /// </summary>
         public bool IsSelected { get; set; }
-
     }
 }

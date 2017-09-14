@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -43,8 +41,6 @@ namespace Mvc5StarterKit
 
         public async Task<ApplicationUser> FindTenantUserAsync(string tenant, string username, string password)
         {
-            var passwordStore = Store as IUserPasswordStore<ApplicationUser>;
-
             var context = ApplicationDbContext.Create();
 
             var user = await context.Users
@@ -53,23 +49,21 @@ namespace Mvc5StarterKit
                 .Where(x=> x.Tenant.Name.Equals(tenant, StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync();
 
-            //var user = users.FirstOrDefault();
-
             if (await CheckPasswordAsync(user, password))
                 return user;
 
             return null;
         }
 
-        public async Task<ApplicationUser> FindADUserAsync(string username, string password)
+        public async Task<ApplicationUser> FindADUserAsync(string domainName, string username, string password)
         {
             var context = ApplicationDbContext.Create();
             var user = await context.Users
+                .Include(x => x.Tenant)
                 .Where(x => x.UserName.Equals(username, StringComparison.InvariantCultureIgnoreCase))
+                .Where(x => x.Tenant.Name.Equals(domainName, StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync();
-            if (LDAPService.GetInstance().Authenticate(username, password))
-                return user;
-            return null;
+            return LDAPService.GetInstance().Authenticate(domainName, username, password) ? user : null;
         }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
@@ -128,23 +122,18 @@ namespace Mvc5StarterKit
         {
         }
 
-        public async Task<bool> ADSigninAsync(string username, string password, bool remember)
+        public async Task<bool> ADSigninAsync(string domainName, string username, string password, bool remember)
         {
-            var user = await (this.UserManager as ApplicationUserManager).FindADUserAsync(username, password);
+            var applicationUserManager = this.UserManager as ApplicationUserManager;
+            if (applicationUserManager == null)
+            {
+                throw new InvalidCastException("ApplicationUserManager type is unknow");
+            }
+
+            var user = await applicationUserManager.FindADUserAsync(domainName, username, password);
             if (user != null)
             {
-                var identity = new ClaimsIdentity(DefaultAuthenticationTypes.ApplicationCookie);
-                identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
-
-                var role = (await UserManager.GetRolesAsync(user.Id)).FirstOrDefault();
-                if(role != null)
-                {
-                    identity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
-                }
-                
-                AuthenticationManager.SignIn(identity);
-
+                await SignInAsync(user, remember, true);
                 return true;
             }
             return false;
@@ -152,14 +141,19 @@ namespace Mvc5StarterKit
 
         public async Task<bool> PasswordSigninAsync(string tenant, string username, string password, bool remember)
         {
-            var user = await (this.UserManager as ApplicationUserManager).FindTenantUserAsync(tenant, username, password);
+            var applicationUserManager = this.UserManager as ApplicationUserManager;
+            if (applicationUserManager == null)
+            {
+                throw new InvalidCastException("ApplicationUserManager type is unknow");
+            }
+            var user = await applicationUserManager.FindTenantUserAsync(tenant, username, password);
 
             if(user != null)
             {
                 await SignInAsync(user, remember, true);
                 return true;
             }
-            
+
             return false;
         }
 

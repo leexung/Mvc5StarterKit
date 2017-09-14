@@ -12,8 +12,10 @@ namespace Mvc5StarterKit.Models
     public class ApplicationUser : IdentityUser
     {
         public int Tenant_Id { get; set; }
+
         [ForeignKey("Tenant_Id")]
         public Tenant Tenant { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

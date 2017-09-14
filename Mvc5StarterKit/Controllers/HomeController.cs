@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNet.Identity;
-using Rhino.Licensing;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using System.Text;
 using Mvc5StarterKit.IzendaBoundary;
 using System.Threading.Tasks;
 using Mvc5StarterKit.Models;
@@ -37,7 +31,9 @@ namespace Mvc5StarterKit.Controllers
             return View();
         }
 
-        public ActionResult API()
+        #region API Sample
+
+        public ActionResult APISample()
         {
             var model = new APIModel();
             model.AvailableMethods.Add(new SelectListItem { Value = "1", Text = "Add Role", Selected = model.APIMethodId == 1 });
@@ -54,7 +50,7 @@ namespace Mvc5StarterKit.Controllers
         /// The token for calling API will be generated from the configuration: izusername, iztenantname
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult> API(APIModel model)
+        public async Task<ActionResult> APISample(APIModel model)
         {
             bool isSuccess = true;
 
@@ -284,7 +280,7 @@ namespace Mvc5StarterKit.Controllers
             //GET /connection/(tenant_id)
             var connections = await IzendaUtility.GetConnections(tenantId, token);
             var conn = connections.SingleOrDefault(x => x.Name.Equals(connectionName, StringComparison.InvariantCultureIgnoreCase));
-            if(conn == null)
+            if (conn == null)
             {
                 logger.ErrorFormat("The connection = {0} is not existed.", connectionName);
                 return false;
@@ -472,14 +468,11 @@ namespace Mvc5StarterKit.Controllers
             return result;
         }
 
+        #endregion
+
         #region Izenda Actions
 
-        [Route("izenda/settings")]
-        [Route("izenda/new")]
-        [Route("izenda/dashboard")]
-        [Route("izenda/report")]
-        [Route("izenda/reportviewer")]
-        [Route("izenda/reportviewerpopup")]
+        [Authorize]
         [Route("izenda")]
         public ActionResult Izenda()
         {
@@ -487,27 +480,31 @@ namespace Mvc5StarterKit.Controllers
         }
 
         //[Route("izendasetting")]
+        [Authorize]
         public ActionResult Settings()
         {
             return View();
         }
 
+        [Authorize]
         public ActionResult Reports()
         {
             return View();
         }
 
-
+        [Authorize]
         public ActionResult ReportDesigner()
         {
             return View();
         }
 
+        [Authorize]
         public ActionResult Dashboards()
         {
             return View();
         }
 
+        [Authorize]
         public ActionResult DashboardDesigner()
         {
             return View();

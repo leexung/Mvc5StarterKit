@@ -9,12 +9,6 @@ namespace Mvc5StarterKit.Controllers
 {
     public class ReportController : Controller
     {
-        // GET: Report
-        public ActionResult Index()
-        {
-            return View();
-        }
-        
         // show report Viewer by id
         public ActionResult ReportViewer(string id)
         {
@@ -22,6 +16,7 @@ namespace Mvc5StarterKit.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult ReportParts()
         {
             return View();

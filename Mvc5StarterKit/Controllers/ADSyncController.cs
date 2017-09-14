@@ -67,7 +67,7 @@ namespace Mvc5StarterKit.Controllers
         {
             var account = GetConfiguredDomainAccount();
             // Check account authenticate
-            if (!LDAPService.GetInstance().Authenticate(account.Username, account.Password))
+            if (!LDAPService.GetInstance().Authenticate(account.DomainName, account.Username, account.Password))
             {
                 ViewBag.AuthenticatedFailMessage =
                     $"Cannot authenticate with your configured domain account {account.DomainName}\\{account.Username}. Check your configured account settings in Web.config";
@@ -92,7 +92,7 @@ namespace Mvc5StarterKit.Controllers
         public async Task<ActionResult> Index(DomainAccount account)
         {
             // Check account authenticate
-            if (!LDAPService.GetInstance().Authenticate(account.Username, account.Password))
+            if (!LDAPService.GetInstance().Authenticate(account.DomainName, account.Username, account.Password))
             {
                 ViewBag.AuthenticatedFailMessage =
                     $"Cannot authenticate with your configured domain account {account.DomainName}\\{account.Username}. Check your configured account settings in Web.config.";
@@ -104,7 +104,13 @@ namespace Mvc5StarterKit.Controllers
             await AddIntegratedTenantIfNotExisting(account.DomainName);
 
             // Generate izenda tenant
-            CreateIzendaTenant(account.DomainName);
+            var result = CreateIzendaTenant(account.DomainName);
+            if (result)
+            {
+                RedirectToAction("Index");
+            }
+
+            ViewBag.AddTenantError = "Failed to create Izenda tenant. Check Izenda log file for more information";
             return View(account);
         }
 
@@ -120,7 +126,7 @@ namespace Mvc5StarterKit.Controllers
             return allIzendaTenants.Any(t => t.Name.Equals(tenantName));
         }
 
-        private void CreateIzendaTenant(string tenantName)
+        private bool CreateIzendaTenant(string tenantName)
         {
             var izendaTenant = new Tenants
             {
@@ -132,7 +138,15 @@ namespace Mvc5StarterKit.Controllers
                 Permission = Izenda.BI.Framework.Utility.PermissionUtil.FullAccess
             };
 
-            TenantIntegrationConfig.AddOrUpdateTenant(izendaTenant);
+            var newTenant = TenantIntegrationConfig.AddOrUpdateTenant(izendaTenant);
+            if (newTenant != null && newTenant.Id != Guid.Empty)
+            {
+                Logger.InfoFormat("The Izenda tenant {0} has been created successully", tenantName);
+                return true;
+            }
+
+            Logger.ErrorFormat("Failed to create Izenda tenant {0}. Check Izenda log file", tenantName);
+            return false;
         }
 
         private static DomainAccount GetConfiguredDomainAccount()
@@ -148,11 +162,11 @@ namespace Mvc5StarterKit.Controllers
 
         #region AD Groups
 
-        public ActionResult ADGroups()
+        public async Task<ActionResult> ADGroups()
         {
             var account = GetConfiguredDomainAccount();
             // Check account authenticate
-            if (!LDAPService.GetInstance().Authenticate(account.Username, account.Password))
+            if (!LDAPService.GetInstance().Authenticate(account.DomainName, account.Username, account.Password))
             {
                 return RedirectToAction("Index");
             }
@@ -162,6 +176,10 @@ namespace Mvc5StarterKit.Controllers
 
             // Query all AD groups
             var listGroups = LDAPService.GetInstance().GetADGroupsAsync();
+
+            // Don't show the role is existing in izenda db
+            var allIzendaRoles = await GetAllIzendaRoles(account.DomainName);
+            listGroups = listGroups.Where(g => !allIzendaRoles.Any(r => r.Name.Equals(g.Name))).ToList();
 
             return View(listGroups);
         }
@@ -185,10 +203,7 @@ namespace Mvc5StarterKit.Controllers
             }
             try
             {
-                var izendaToken = IzendaTokenHelper.GetIzendaToken();
-                var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
-                var domainTenant = allIzendaTenants.Single(t => t.Name.Equals(tenantUniqueName));
-                var allRoles = await IzendaUtility.GetRoles(domainTenant.Id, izendaToken);
+                var allRoles = await GetAllIzendaRoles(tenantUniqueName);
                 if (!allRoles.Any(t => t.Name.Equals(roleName)))
                 {
                     Logger.DebugFormat("Saved AD Group [{0}] as a tenant in Izenda", roleName);
@@ -203,6 +218,27 @@ namespace Mvc5StarterKit.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
         }
+
+        private static async Task<IList<IzendaBoundary.Models.RoleDetail>> GetAllIzendaRoles(string tenantUniqueName)
+        {
+            var izendaToken = IzendaTokenHelper.GetIzendaToken();
+            var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
+            var domainTenant = allIzendaTenants.Single(t => t.Name.Equals(tenantUniqueName));
+            var allRoles = await IzendaUtility.GetRoles(domainTenant.Id, izendaToken);
+            return allRoles;
+        }
+
+        public async Task<JsonResult> CheckExistingRole(string tenantUniqueName, string roleName)
+        {
+            var isExistingIntegratedRole = RoleManager.RoleExists(roleName);
+            var izendaToken = IzendaTokenHelper.GetIzendaToken();
+            var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
+            var domainTenant = allIzendaTenants.Single(t => t.Name.Equals(tenantUniqueName));
+            var allRoles = await IzendaUtility.GetRoles(domainTenant.Id, izendaToken);
+            var isExistingIzendaRole = allRoles.Any(t => t.Name.Equals(roleName));
+
+            return Json(isExistingIntegratedRole && isExistingIzendaRole, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region AD Users
@@ -211,7 +247,7 @@ namespace Mvc5StarterKit.Controllers
         {
             var account = GetConfiguredDomainAccount();
             // Check account authenticate
-            if (!LDAPService.GetInstance().Authenticate(account.Username, account.Password))
+            if (!LDAPService.GetInstance().Authenticate(account.DomainName, account.Username, account.Password))
             {
                 return RedirectToAction("Index");
             }
@@ -220,15 +256,25 @@ namespace Mvc5StarterKit.Controllers
 
             // Query all AD users
             var listUsers = LDAPService.GetInstance().GetADUsers();
-
+           
             return View(listUsers);
         }
 
-        public ActionResult ADUserDetail(string samAccountName)
+        public async Task<ActionResult> ADUserDetail(string samAccountName)
         {
             var adUser = LDAPService.GetInstance().GetADUserDetail(samAccountName);
             adUser.DomainName = ConfigurationManager.AppSettings["LDAPName"];
+            ViewBag.IsExistingInIzenda = await CheckIsExistingIzendaUser(adUser.DomainName, samAccountName);
             return View(adUser);
+        }
+
+        private static async Task<bool> CheckIsExistingIzendaUser(string tenant, string username, string izendaToken = "")
+        {
+            izendaToken = string.IsNullOrEmpty(izendaToken) ? IzendaTokenHelper.GetIzendaToken() : izendaToken;
+            var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
+            var domainTenant = allIzendaTenants.Single(t => t.Name.Equals(tenant));
+            var allTenantUsers = await IzendaUtility.GetUsers(domainTenant.Id, izendaToken);
+            return allTenantUsers.Any(u => u.UserName.Equals(username));
         }
 
         [HttpPost]
@@ -325,7 +371,7 @@ namespace Mvc5StarterKit.Controllers
             // Create role in integrated db
             await CreateIntegratedRoles(adUser.Groups);
 
-            adUser.Password = ConfigurationManager.AppSettings["DefaultADUserSyncPassword"];
+            adUser.Password = adUser.Password;
             var user = new ApplicationUser
             {
                 UserName = adUser.SamAccountName,

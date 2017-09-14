@@ -12,16 +12,10 @@ namespace Mvc5StarterKit.Controllers
         [Authorize]
         public ActionResult GenerateToken()
         {
-            var accountName = User.Identity.GetUserName();
-            //accountName is in the format: domain\username
-            //we will parse it to get the domain portion and it's also tenant name.
-            var s = accountName.Split('\\');
-            if (s.Count() != 2)
-            {
-                throw new ArgumentException("Invalid Account Name format");
-            }
+            var username = User.Identity.GetUserName();
+            var tenantName = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirstValue("tenantName");
 
-            var user = new Models.UserInfo { UserName = s[1], TenantUniqueName = s[0] };
+            var user = new Models.UserInfo { UserName = username, TenantUniqueName = tenantName };
             var token = IzendaBoundary.IzendaTokenAuthorization.GetToken(user);
             return Json(new { token = token }, JsonRequestBehavior.AllowGet);
         }

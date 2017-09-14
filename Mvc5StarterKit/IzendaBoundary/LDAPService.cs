@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
@@ -28,16 +29,15 @@ namespace Mvc5StarterKit.IzendaBoundary
         /// Can use this method for a secure LDAP connection (LDAPS)
         /// Secure LDAP port: 636, Non-secure LDAP port: 389
         /// </summary>
-        public bool Authenticate(string username, string password)
+        public bool Authenticate(string domainName, string username, string password)
         {
-            var domain = ConfigurationManager.AppSettings["LDAPName"];
             var port = ConfigurationManager.AppSettings["LDAPPort"];
 
             try
             {
-                using (var ldapConnection = new LdapConnection(domain + ":" + port))
+                using (var ldapConnection = new LdapConnection(domainName + ":" + port))
                 {
-                    var networkCredential = new NetworkCredential(username, password, domain);
+                    var networkCredential = new NetworkCredential(username, password, domainName);
                     ldapConnection.SessionOptions.SecureSocketLayer = false;
                     ldapConnection.AuthType = AuthType.Negotiate;
                     ldapConnection.Bind(networkCredential);

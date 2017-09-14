@@ -2,14 +2,13 @@
 @{
     ViewBag.Title = "Active Directory Synchornization";
 
-    var isNotLDAPAuthenticated = 
-        string.IsNullOrWhiteSpace(ViewBag.AuthenticatedFailMessage);
+    var isLDAPAuthenticated = string.IsNullOrWhiteSpace(ViewBag.AuthenticatedFailMessage);
 
     var isGeneratedTenant = ViewBag.IzendaTenantWasGenerated != null && ViewBag.IzendaTenantWasGenerated;//avoid casting null to bool
 }
 
 <h2>@ViewBag.Title</h2>
-@if (isNotLDAPAuthenticated)
+@if (!isLDAPAuthenticated)
 {
     <h4 class="text-danger">@ViewBag.AuthenticatedFailMessage</h4>
 }
@@ -34,10 +33,14 @@
 }
 else
 {
+    if (!string.IsNullOrEmpty(ViewBag.AddTenantError))
+    {
+        <h4 class="text-danger">ViewBag.AddTenantError</h4>
+    }
     <div class="row">
         <div class="col-md-8">
             <section id="adsync">
-                @using (Html.BeginForm("Index", "ADSync", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "query-form" }))
+                @using (Html.BeginForm("Index", "ADSync", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "query-form" }))
                 {
                     @Html.AntiForgeryToken()
                     <h4>Use the configured domain account in Web.config file to sync roles and users.</h4>
@@ -63,16 +66,14 @@ else
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
                                 <div class="col-md-10">
-                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", @readonly = "true" })
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", @readonly = "true", value = Model.Password })
                                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
-                            @Html.HiddenFor(m => m.QueryType, new { id = "query-type" })
-
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
-                                    <button type="submit" id="submit-query-groups" class="btn btn-default" @(!isNotLDAPAuthenticated ? "readonly" : string.Empty)>Generate Izenda Tenant</button>
+                                    <button type="submit" id="submit-query-groups" class="btn btn-default" @(!isLDAPAuthenticated ? "disabled" : string.Empty)>Generate Izenda Tenant</button>
                                 </div>
                             </div>
                 }
