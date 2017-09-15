@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 
@@ -14,6 +15,9 @@ namespace Mvc5StarterKit.Models
         public string DistinguishedName { get; set; }
 
         public string Description { get; set; }
+
+        [DisplayName("Is System Admin")]
+        public bool IsExistingInIzenda { get; set; }
 
         /// <summary>
         /// The flag is used on mvc page to identify the group is whether selected or not

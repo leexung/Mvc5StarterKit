@@ -26,16 +26,16 @@
     </div>
     <h4>Query and Sync:</h4>
     <p style="margin-left: 30px">
-        @Html.ActionLink("Sync AD Groups", "ADGroups")
+        @Html.ActionLink("AD Groups", "ADGroups")
         <br/>
-        @Html.ActionLink("Sync AD Users", "ADUsers")
+        @Html.ActionLink("AD Users", "ADUsers")
     </p>
 }
 else
 {
     if (!string.IsNullOrEmpty(ViewBag.AddTenantError))
     {
-        <h4 class="text-danger">ViewBag.AddTenantError</h4>
+        <h4 class="text-danger">@ViewBag.AddTenantError</h4>
     }
     <div class="row">
         <div class="col-md-8">

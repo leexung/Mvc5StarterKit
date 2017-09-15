@@ -65,7 +65,7 @@ namespace Mvc5StarterKit.IzendaBoundary
         /// Get all groups in Active Directory
         /// </summary>
         /// <returns></returns>
-        public IList<ADGroup> GetADGroupsAsync()
+        public IList<ADGroup> GetADGroups()
         {
             var listGroupResult = new List<ADGroup>();
             // Create domain context

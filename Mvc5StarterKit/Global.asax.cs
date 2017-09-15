@@ -15,7 +15,7 @@ namespace Mvc5StarterKit
         protected void Application_Start()
         {
             log4net.Config.XmlConfigurator.Configure();
-            log4net.LogManager.GetLogger(typeof(MvcApplication)).Debug("Starter Kit starts up...");
+            log4net.LogManager.GetLogger(typeof(MvcApplication)).Debug("Starter Kit is starting up...");
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -25,6 +25,7 @@ namespace Mvc5StarterKit
             
             // override AntiForgery configuration for application ClaimIdentity
             AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimsIdentity.DefaultNameClaimType;
+            log4net.LogManager.GetLogger(typeof(MvcApplication)).Debug("Starter Kit has started up successfully.");
         }
 
         protected void Application_Error(object sender, EventArgs e)

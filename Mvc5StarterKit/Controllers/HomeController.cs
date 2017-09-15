@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Mvc5StarterKit.IzendaBoundary;
 using System.Threading.Tasks;
-using Mvc5StarterKit.Models;
-using Mvc5StarterKit.IzendaBoundary.Models;
 using log4net;
-using Mvc5StarterKit.IzendaBoundary.Models.Permissions;
 using IzendaFramework = Izenda.BI.Framework.Models.DBStructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Izenda.BI.Framework.Models;
+using Izenda.BI.Framework.Models.Permissions;
+using Mvc5StarterKit.IzendaBoundary;
+using Mvc5StarterKit.IzendaBoundary.Models;
 using Mvc5StarterKit.Managers;
 
 namespace Mvc5StarterKit.Controllers
@@ -35,7 +34,7 @@ namespace Mvc5StarterKit.Controllers
 
         public ActionResult APISample()
         {
-            var model = new APIModel();
+            var model = new Mvc5StarterKit.Models.APIModel();
             model.AvailableMethods.Add(new SelectListItem { Value = "1", Text = "Add Role", Selected = model.APIMethodId == 1 });
             model.AvailableMethods.Add(new SelectListItem { Value = "2", Text = "Add Table/View/SP", Selected = model.APIMethodId == 2 });
             return View(model);
@@ -50,7 +49,7 @@ namespace Mvc5StarterKit.Controllers
         /// The token for calling API will be generated from the configuration: izusername, iztenantname
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult> APISample(APIModel model)
+        public async Task<ActionResult> APISample(Mvc5StarterKit.Models.APIModel model)
         {
             bool isSuccess = true;
 
@@ -153,7 +152,7 @@ namespace Mvc5StarterKit.Controllers
 
             //Setup RoleDetail model to pass to API
             //only need to pass TenantUniqueName to POST /role/intergration/saveRole, no need tenantId
-            var role = new RoleDetail();
+            var role = new IzendaFramework.RoleDetail();
             role.TenantUniqueName = tenantUniqueName;
             role.Name = roleName;
             role.Active = true;
@@ -180,7 +179,7 @@ namespace Mvc5StarterKit.Controllers
                 else
                 {
                     //new UserDetail model
-                    var userDetail = new UserDetail
+                    var userDetail = new IzendaFramework.UserDetail
                     {
                         Id = user.Id,
                         UserName = user.UserName
@@ -271,10 +270,10 @@ namespace Mvc5StarterKit.Controllers
             }
 
 
-            QuerySourceModel table = null;
-            QuerySourceModel view = null;
-            QuerySourceModel sp = null;
-            QuerySourceModel function = null;
+            QuerySource table = null;
+            QuerySource view = null;
+            QuerySource sp = null;
+            QuerySource function = null;
 
             //Get connection by name by calling API to get all connections then search by name.
             //GET /connection/(tenant_id)
@@ -372,7 +371,7 @@ namespace Mvc5StarterKit.Controllers
                         //if role doesn't have any VisibleQuerySources, instantiate it
                         if (role.VisibleQuerySources == null)
                         {
-                            role.VisibleQuerySources = new List<QuerySourceModel>();
+                            role.VisibleQuerySources = new List<QuerySource>();
                         }
 
                         //Check if the added table, view, sp, function already in VisibleQuerySources. If not existed, attach it to Role
@@ -449,11 +448,11 @@ namespace Mvc5StarterKit.Controllers
         /// <param name="model">table, view, sp, function QuerySourceModel</param>
         /// <param name="availableQuerySources">Connection Available Query Sources</param>
         /// <returns>A new QuerySourceModel to attach to Role</returns>
-        private QuerySourceModel BuildQuerySourceForRole(QuerySourceModel model, List<QuerySourceModel> availableQuerySources)
+        private QuerySource BuildQuerySourceForRole(QuerySource model, List<QuerySource> availableQuerySources)
         {
-            var result = new QuerySourceModel();
+            var result = new QuerySource();
             result.Id = model.Id;
-            result.QuerySourceFields = new List<QuerySourceFieldModel>();
+            result.QuerySourceFields = new List<QuerySourceField>();
 
             //add all QuerySourceFields
             var querySource = availableQuerySources.Where(q => q.Id == model.Id).FirstOrDefault();
@@ -461,7 +460,7 @@ namespace Mvc5StarterKit.Controllers
             {
                 foreach (var field in querySource.QuerySourceFields)
                 {
-                    result.QuerySourceFields.Add(new QuerySourceFieldModel { Id = field.Id });
+                    result.QuerySourceFields.Add(new QuerySourceField { Id = field.Id });
                 }
             }
 
@@ -534,7 +533,7 @@ namespace Mvc5StarterKit.Controllers
             #warning CAUTION!! Update this method to use your authentication scheme or remove it entirely if the copy console will not be used.
             if (username == "IzendaAdmin@system.com" && password == "Izenda@123")
             {
-                var user = new UserInfo { UserName = username, TenantUniqueName = "System" };
+                var user = new Mvc5StarterKit.Models.UserInfo { UserName = username, TenantUniqueName = "System" };
                 var token = IzendaTokenAuthorization.GetToken(user);
 
                 var accessToken = new IzendaFramework.AccessToken

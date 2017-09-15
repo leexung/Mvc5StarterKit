@@ -30,11 +30,13 @@ namespace Mvc5StarterKit.Controllers
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
+                if (_userManager != null)
+                {
+                    return _userManager;
+                }
+
+                _userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return _userManager;
             }
         }
 
@@ -54,10 +56,6 @@ namespace Mvc5StarterKit.Controllers
                 _roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(appContext));
                 return _roleManager;
             }
-            private set
-            {
-                _roleManager = value;
-            }
         }
 
         #endregion
@@ -67,13 +65,10 @@ namespace Mvc5StarterKit.Controllers
         {
             var account = GetConfiguredDomainAccount();
             // Check account authenticate
-            if (!LDAPService.GetInstance().Authenticate(account.DomainName, account.Username, account.Password))
+            if (!CheckAuthenticatedOfDomainAccount(account))
             {
-                ViewBag.AuthenticatedFailMessage =
-                    $"Cannot authenticate with your configured domain account {account.DomainName}\\{account.Username}. Check your configured account settings in Web.config";
                 return View(account);
             }
-            ViewBag.IsValidLDAPConfig = true;
 
             // Check izenda tenant is existing or not
             var isExistIzendaTenant = await CheckIsExistingIzendaTenant(account.DomainName);
@@ -92,13 +87,10 @@ namespace Mvc5StarterKit.Controllers
         public async Task<ActionResult> Index(DomainAccount account)
         {
             // Check account authenticate
-            if (!LDAPService.GetInstance().Authenticate(account.DomainName, account.Username, account.Password))
+            if (!CheckAuthenticatedOfDomainAccount(account))
             {
-                ViewBag.AuthenticatedFailMessage =
-                    $"Cannot authenticate with your configured domain account {account.DomainName}\\{account.Username}. Check your configured account settings in Web.config.";
                 return View(account);
             }
-            ViewBag.IsValidLDAPConfig = true;
 
             // Generate integrated tenant
             await AddIntegratedTenantIfNotExisting(account.DomainName);
@@ -107,11 +99,25 @@ namespace Mvc5StarterKit.Controllers
             var result = CreateIzendaTenant(account.DomainName);
             if (result)
             {
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
 
             ViewBag.AddTenantError = "Failed to create Izenda tenant. Check Izenda log file for more information";
             return View(account);
+        }
+
+        private bool CheckAuthenticatedOfDomainAccount(DomainAccount account)
+        {
+            if (!LDAPService.GetInstance().Authenticate(account.DomainName, account.Username, account.Password))
+            {
+                ViewBag.AuthenticatedFailMessage =
+                    $"Cannot authenticate with your configured domain account {account.DomainName}\\{account.Username}. Check your configured account settings in Web.config.";
+                return false;
+            }
+
+            Logger.Info($"Authenticate to domain account {account.DomainName}\\{account.Username} successfully.");
+            ViewBag.IsValidLDAPConfig = true;
+            return true;
         }
 
         /// <summary>
@@ -175,11 +181,14 @@ namespace Mvc5StarterKit.Controllers
             ViewBag.DomainName = account.DomainName;
 
             // Query all AD groups
-            var listGroups = LDAPService.GetInstance().GetADGroupsAsync();
+            var listGroups = ADCachingManager.GetInstance().GetADGroups();
 
-            // Don't show the role is existing in izenda db
+            // Check role existing status in izenda db
             var allIzendaRoles = await GetAllIzendaRoles(account.DomainName);
-            listGroups = listGroups.Where(g => !allIzendaRoles.Any(r => r.Name.Equals(g.Name))).ToList();
+            foreach (var group in listGroups)
+            {
+                group.IsExistingInIzenda = allIzendaRoles.Any(r => r.Name.Equals(group.Name));
+            }
 
             return View(listGroups);
         }
@@ -219,7 +228,7 @@ namespace Mvc5StarterKit.Controllers
             }
         }
 
-        private static async Task<IList<IzendaBoundary.Models.RoleDetail>> GetAllIzendaRoles(string tenantUniqueName)
+        private static async Task<IList<RoleDetail>> GetAllIzendaRoles(string tenantUniqueName)
         {
             var izendaToken = IzendaTokenHelper.GetIzendaToken();
             var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
@@ -255,7 +264,7 @@ namespace Mvc5StarterKit.Controllers
             ViewBag.DomainName = account.DomainName;
 
             // Query all AD users
-            var listUsers = LDAPService.GetInstance().GetADUsers();
+            var listUsers = ADCachingManager.GetInstance().GetADUsers();
            
             return View(listUsers);
         }
@@ -264,44 +273,66 @@ namespace Mvc5StarterKit.Controllers
         {
             var adUser = LDAPService.GetInstance().GetADUserDetail(samAccountName);
             adUser.DomainName = ConfigurationManager.AppSettings["LDAPName"];
-            ViewBag.IsExistingInIzenda = await CheckIsExistingIzendaUser(adUser.DomainName, samAccountName);
+
+            // Get Izenda User info
+            var izUser = await GetExistingIzendaUser(adUser.DomainName, samAccountName);
+            ViewBag.IsExistingInIzenda = izUser != null;
+
+            //Sync iz user info if exist
+            if (izUser != null)
+            {
+                adUser.IsSystemAdmin = izUser.SystemAdmin;
+                foreach (var adGroup in adUser.Groups)
+                {
+                    // Set selected state for izenda role
+                    adGroup.IsSelected = izUser.Roles.Any(r => r.Name.Equals(adGroup.Name));
+                }
+            }
+
             return View(adUser);
         }
 
-        private static async Task<bool> CheckIsExistingIzendaUser(string tenant, string username, string izendaToken = "")
+        private static async Task<UserDetail> GetExistingIzendaUser(string tenant, string username, string izendaToken = "")
         {
             izendaToken = string.IsNullOrEmpty(izendaToken) ? IzendaTokenHelper.GetIzendaToken() : izendaToken;
             var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
             var domainTenant = allIzendaTenants.Single(t => t.Name.Equals(tenant));
             var allTenantUsers = await IzendaUtility.GetUsers(domainTenant.Id, izendaToken);
-            return allTenantUsers.Any(u => u.UserName.Equals(username));
+            return allTenantUsers.FirstOrDefault(u => u.UserName.Equals(username));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SaveIzendaUser(ADUser adUser)
+        public async Task<ActionResult> ADUserDetail(ADUser adUser)
         {
             if (ModelState.IsValid)
             {
                 // Save domain as tenant in integrated db
                 var tenant = await AddIntegratedTenantIfNotExisting(adUser.DomainName);
 
+                await CreateIntegratedRoles(adUser.Groups);
+
                 // Create user in integrated db
-                var result = await CreateIntegratedRolesAndUser(adUser, tenant);
-                if (result.Succeeded)
+                var userId = await CreateIntegratedUser(adUser, tenant);
+                if (!string.IsNullOrWhiteSpace(userId))
                 {
+                    // Genereate relationship entry between user and role
+                    await LinkIntegratedRoleToUser(userId, adUser.Groups);
+
                     // Create izenda user
                     await CreateIzendaUser(adUser, tenant.Name);
                 }
                 else
                 {
-                    AddIdentityResultErrors(result);
+                    var addIntegratedUserError = $"Failed to create integrated user {adUser.SamAccountName}";
+                    Logger.Error(addIntegratedUserError);
+                    ModelState.AddModelError("", addIntegratedUserError);
                 }
 
                 return RedirectToAction("ADUsers");
             }
 
-            return View("ADUserDetail", adUser);
+            return View(adUser);
         }
         
         private static async Task CreateIzendaUser(ADUser adUser, string tenant)
@@ -317,14 +348,14 @@ namespace Mvc5StarterKit.Controllers
                 return;
             }
 
-            var izendaUser = new UserDetail()
+            var izendaUser = new UserDetail
             {
                 UserName = adUser.SamAccountName,
                 EmailAddress = adUser.UserPrincipalName,
                 FirstName = adUser.FirstName,
                 LastName = adUser.LastName,
                 TenantDisplayId = adUser.DomainName,
-                SystemAdmin = false,//Tenant user never is system admin
+                //SystemAdmin = adUser.IsSystemAdmin, Tenant user is not able be an system admin
                 Deleted = false,
                 Active = true,
                 Roles = new List<Role>()
@@ -366,12 +397,8 @@ namespace Mvc5StarterKit.Controllers
             RoleIntegrationConfig.AddOrUpdateRole(roleDetail);
         }
 
-        private async Task<IdentityResult> CreateIntegratedRolesAndUser(ADUser adUser, Tenant tenant)
+        private async Task<string> CreateIntegratedUser(ADUser adUser, Tenant tenant)
         {
-            // Create role in integrated db
-            await CreateIntegratedRoles(adUser.Groups);
-
-            adUser.Password = adUser.Password;
             var user = new ApplicationUser
             {
                 UserName = adUser.SamAccountName,
@@ -379,12 +406,13 @@ namespace Mvc5StarterKit.Controllers
                 Tenant_Id = tenant.Id,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            var result = await UserManager.CreateAsync(user, adUser.Password);
-            
-            // Genereate relationship entry between user and role
-            await LinkIntegratedRoleToUser(user.Id, adUser.Groups);
+            var result = await UserManager.CreateAsync(user, "Izenda@2017");//Authentication based on AD, no need to store user password
+            if (!result.Succeeded)
+            {
+                Logger.ErrorFormat("Failed to save integrated user {0}. ERROR: {1}", user.UserName, result.Errors.FirstOrDefault());
+            }
 
-            return result;
+            return user.Id;
         }
 
         private async Task CreateIntegratedRoles(IList<ADGroup> groups)
@@ -407,10 +435,13 @@ namespace Mvc5StarterKit.Controllers
             //await UserManager.AddToRoleAsync(user.Id, roleName);
             foreach (var adGroup in roles)
             {
-                var identityRet = await UserManager.AddToRoleAsync(userId, adGroup.Name);
-                if (!identityRet.Succeeded)
+                if (adGroup.IsSelected)
                 {
-                    Logger.ErrorFormat("Failed to link integrated role {0} with user id {1}", adGroup.Name, userId);
+                    var identityRet = await UserManager.AddToRoleAsync(userId, adGroup.Name);
+                    if (!identityRet.Succeeded)
+                    {
+                        Logger.ErrorFormat("Failed to link integrated role {0} with user id {1}. ERROR: {2}", adGroup.Name, userId, identityRet.Errors.FirstOrDefault());
+                    }
                 }
             }
         }
@@ -424,18 +455,13 @@ namespace Mvc5StarterKit.Controllers
             if (exstingTenant != null)
                 tenant = exstingTenant;
             else
+            {
+                Logger.WarnFormat("Add missed integrated tenant [{0}]", tenantName);
                 tenant = await tenantManager.SaveTenantAsync(tenant);
+            }
             return tenant;
         }
 
         #endregion
-
-        private void AddIdentityResultErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-        }
     }
 }

@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <table class="table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>#</th>
@@ -20,10 +20,15 @@
                 @foreach (var adGroup in Model)
                 {
                     <tr>
-                        <th scope="row">@(Model.IndexOf(adGroup) + 1)</th>
+                        <td scope="row">@(Model.IndexOf(adGroup) + 1)</td>
                         <td>@adGroup.Name</td>
                         <td>@adGroup.Description</td>
-                        <td><button class="save-as-role btn btn-default" data-save-role="@adGroup.Name">Save as Izenda Role</button></td>
+                        <td>
+                            @if (!adGroup.IsExistingInIzenda)
+                            {
+                                <button class="save-as-role btn btn-primary" data-save-role="@adGroup.Name">Save as Izenda Role</button>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>

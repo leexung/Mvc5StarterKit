@@ -1,16 +1,16 @@
-﻿using Mvc5StarterKit.IzendaBoundary.Models;
-using Mvc5StarterKit.IzendaBoundary.Models.Permissions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
+using Izenda.BI.API.Results;
+using Izenda.BI.Framework.Models.Permissions;
+using Izenda.BI.Framework.Models;
+using Izenda.BI.Framework.Models.DBStructure;
 
 namespace Mvc5StarterKit.IzendaBoundary
 {
     public class IzendaUtility
     {
-        public static async Task<IList<ConnectionModel>> GetConnections(Guid? tenantId, string authToken)
+        public static async Task<IList<Connection>> GetConnections(Guid? tenantId, string authToken)
         {
             string action = string.Empty;
             if (tenantId == null)
@@ -21,18 +21,18 @@ namespace Mvc5StarterKit.IzendaBoundary
             {
                 action = "connection/" + tenantId.ToString();
             }
-            var connections = await WebAPIService.Instance.GetAsync<IList<ConnectionModel>>(action, authToken);
+            var connections = await WebAPIService.Instance.GetAsync<IList<Connection>>(action, authToken);
             return connections;
         }
 
-        public static async Task<ConnectionDetail> GetConnectionDetail(Guid connectionId, string authToken)
+        public static async Task<ConnectionResult> GetConnectionDetail(Guid connectionId, string authToken)
         {
             string action = "connection/detail/" + connectionId.ToString();
-            var connection = await WebAPIService.Instance.GetAsync<ConnectionDetail>(action, authToken);
+            var connection = await WebAPIService.Instance.GetAsync<ConnectionResult>(action, authToken);
             return connection;
         }
 
-        public static async Task UpdateConnectionDetail(ConnectionModel payload, string authToken)
+        public static async Task UpdateConnectionDetail(Connection payload, string authToken)
         {
             string action = "connection";
             await WebAPIService.Instance.PostAsync(action, payload, authToken);
@@ -45,10 +45,10 @@ namespace Mvc5StarterKit.IzendaBoundary
             await WebAPIService.Instance.PostAsync(action, payload, authToken);
         }
 
-        public static async Task<IList<TenantsModel>> GetTenants(string authToken)
+        public static async Task<IList<Tenants>> GetTenants(string authToken)
         {
             string action = "tenant/allTenants";
-            var tenants = await WebAPIService.Instance.GetAsync<IList<TenantsModel>>(action, authToken);
+            var tenants = await WebAPIService.Instance.GetAsync<IList<Tenants>>(action, authToken);
             return tenants;
         }
 
@@ -96,10 +96,10 @@ namespace Mvc5StarterKit.IzendaBoundary
             return permission;
         }
 
-        public static async Task<ConnectionModel> ReloadRemoteSchema(object payload, string authToken)
+        public static async Task<SchemaResult> ReloadRemoteSchema(object payload, string authToken)
         {
             string action = "connection/reloadRemoteSchema";
-            return await WebAPIService.Instance.PostReturnValueAsync<ConnectionModel, object>(action, payload, authToken);
+            return await WebAPIService.Instance.PostReturnValueAsync<SchemaResult, object>(action, payload, authToken);
         }
     }
 }

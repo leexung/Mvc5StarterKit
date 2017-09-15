@@ -1,12 +1,12 @@
 ﻿@model Mvc5StarterKit.Models.ADUser
 @{
     ViewBag.Title = "Active Directory User Detail";
-    var isNotIzendaUser = ViewBag.IsExistingInIzenda != null && !(bool) ViewBag.IsExistingInIzenda;
+    var isIzendaUser = ViewBag.IsExistingInIzenda != null && (bool) ViewBag.IsExistingInIzenda;
 }
 <h3>@ViewBag.Title</h3>
 <h4>Domain Name: <span id="domain-name">@Model.DomainName</span></h4>
 
-@using (Html.BeginForm("SaveIzendaUser", "ADSync", FormMethod.Post))
+@using (Html.BeginForm(FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary("", new { @class = "text-danger" })
@@ -54,28 +54,19 @@
                 @Html.DisplayFor(model => model.Description)
                 @Html.HiddenFor(model => model.Description)
             </dd>
-            @if (isNotIzendaUser)
-            {
-                <dt style="margin-top: 10px;">
-                    @Html.DisplayNameFor(model => model.Password)
-                </dt>
-                <dd style="margin-top: 10px;">
-                    @Html.PasswordFor(model => model.Password)
-                </dd>
-                <dt style="margin-top: 10px;">
-                    @Html.DisplayNameFor(model => model.ConfirmPassword)
-                </dt>
-                <dd style="margin-top: 10px;">
-                    @Html.PasswordFor(model => model.ConfirmPassword)
-                </dd>
-            }
+            @*<dt>
+                @Html.DisplayNameFor(model => model.IsSystemAdmin)
+            </dt>
+            <dd>
+                @Html.CheckBoxFor(model => model.IsSystemAdmin)
+            </dd>*@
             @Html.HiddenFor(model => model.DomainName)
         </dl>
     </div>
     <h4>Groups:</h4>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table">
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -101,7 +92,7 @@
             </table>
         </div>
     </div>
-    if (isNotIzendaUser)
+    if (!isIzendaUser)
     {
         <div class="row">
             <div class="col-lg-12">

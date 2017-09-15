@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.DirectoryServices;
-using System.Linq;
-using System.Web;
 
 namespace Mvc5StarterKit.Models
 {
@@ -12,17 +8,6 @@ namespace Mvc5StarterKit.Models
         public string DomainName { get; set; }
 
         public string SamAccountName { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
 
         public string UserPrincipalName { get; set; }
 
@@ -33,6 +18,12 @@ namespace Mvc5StarterKit.Models
         public string FirstName { get; set; }
 
         public string Description { get; set; }
+
+        #region Iz User Info
+
+        public bool IsSystemAdmin { get; set; }
+
+        #endregion
 
         public IList<ADGroup> Groups { get; set; }
 
