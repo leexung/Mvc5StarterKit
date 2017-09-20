@@ -176,6 +176,11 @@ namespace Mvc5StarterKit.IzendaBoundary
                     Where(x => x.JoinQuerySourceId == querySource.Id)
                     .ToList();
 
+                // Count the relationships that the filter query source is foreign query source
+                var foreignRelCounts = param.ReportDefinition.ReportRelationship
+                    .Where(x => x.ForeignQuerySourceId == querySource.Id)
+                    .Count();
+
                 // Find actual filter field in query source
                 var field = querySource.QuerySourceFields.FirstOrDefault(x => x.Name.Equals(filterFieldName, StringComparison.OrdinalIgnoreCase));
 
@@ -190,9 +195,25 @@ namespace Mvc5StarterKit.IzendaBoundary
                 }
                 else
                 {
-                    // Loop thru all relationships that the query source is joined as primary and add the hidden field associated with each relationship
+                    // Add another hidden filter for query source that appears in both alias primary and foreign query source of relationships.
+                    // This step is mandatory because when aliasing a primary query source, it becomes another instance of query source in the query. 
+                    // So if we only add filter for alias, the original query source instance will not be impacted by the filter. That's why we need
+                    // to add another filter for original instance when it appears in both side of alias and foreign.
+                    // For example:
+                    //          [Order] LEFT JOIN [Employee]
+                    //      [Aliased Employee] LEFT JOIN [Department]
+                    // If the system needs to add a hidden filter to [Employee], for example: [CompanyId] = 'ALKA'
+                    // It needs to add
+                    //          [Employee].[CompanyId] = 'ALKA' AND [Aliased Employee].[CompanyId] = 'ALKA'
+                    // By this way, it ensures all [Employee] instances are filtered by ALKA company id.
+                    if (foreignRelCounts > 0)
+                    {
+                        position = addHiddenFilters(filterSetting, position, querySource, field, equalOperator, null);
+                    }
+                    
                     foreach (var rel in rels)
                     {
+                        // Loop thru all relationships that the query source is joined as primary and add the hidden field associated with each relationship
                         position = addHiddenFilters(filterSetting, position, querySource, field, equalOperator, rel);
                     }
                 }
