@@ -29,7 +29,11 @@ namespace Mvc5StarterKit.Models
                 });
             }
             var role = (await manager.GetRolesAsync(this.Id)).FirstOrDefault();
-            userIdentity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+            // In case of system admin, there is no role
+            if (role != null)
+            {
+                userIdentity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+            }
 
             // Add custom user claims here
             return userIdentity;

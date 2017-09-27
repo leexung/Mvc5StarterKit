@@ -141,7 +141,8 @@ namespace Mvc5StarterKit.Controllers
                 Name = tenantName,
                 TenantID = tenantName,
                 Description = $"Generated from AD domain {tenantName}",
-                Permission = Izenda.BI.Framework.Utility.PermissionUtil.FullAccess
+                TenantModules = IzendaPermissionUtil.FullTenantModules,
+                Permission = IzendaPermissionUtil.FullAccess
             };
 
             var newTenant = TenantIntegrationConfig.AddOrUpdateTenant(izendaTenant);
@@ -307,8 +308,9 @@ namespace Mvc5StarterKit.Controllers
         {
             if (ModelState.IsValid)
             {
+                var tenantName = adUser.IsSystemAdmin ? "System" : adUser.DomainName;
                 // Save domain as tenant in integrated db
-                var tenant = await AddIntegratedTenantIfNotExisting(adUser.DomainName);
+                var tenant = await AddIntegratedTenantIfNotExisting(tenantName);
 
                 await CreateIntegratedRoles(adUser.Groups);
 
@@ -337,50 +339,58 @@ namespace Mvc5StarterKit.Controllers
         
         private static async Task CreateIzendaUser(ADUser adUser, string tenant)
         {
-            // Break saving flow if izenda user is already exist
-            var izendaToken = IzendaTokenHelper.GetIzendaToken();
-            var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
-            var domainTenant = allIzendaTenants.Single(t => t.Name.Equals(tenant));
-            var allTenantUsers = await IzendaUtility.GetUsers(domainTenant.Id, izendaToken);
-            if (allTenantUsers.Any(u => u.UserName.Equals(adUser.SamAccountName)))
-            {
-                Logger.WarnFormat("Izenda user {0} is alredy exist", adUser.SamAccountName);
-                return;
-            }
-
+            //Construct new izenda user
             var izendaUser = new UserDetail
             {
                 UserName = adUser.SamAccountName,
                 EmailAddress = adUser.UserPrincipalName,
                 FirstName = adUser.FirstName,
                 LastName = adUser.LastName,
-                TenantDisplayId = adUser.DomainName,
-                //SystemAdmin = adUser.IsSystemAdmin, Tenant user is not able be an system admin
+                SystemAdmin = adUser.IsSystemAdmin,
                 Deleted = false,
                 Active = true,
-                Roles = new List<Role>()
+                Roles = new List<Role>(),
             };
 
-            var allRoles = await IzendaUtility.GetRoles(domainTenant.Id, izendaToken);
-
-            foreach (var adGroup in adUser.Groups)
+            if (!"System".Equals(tenant) && !adUser.IsSystemAdmin)
             {
-                if (adGroup.IsSelected)
+                // Break saving flow if izenda user is already exist
+                var izendaToken = IzendaTokenHelper.GetIzendaToken();
+                var allIzendaTenants = await IzendaUtility.GetTenants(izendaToken);
+                var domainTenant = allIzendaTenants.Single(t => t.Name.Equals(tenant));
+                var allTenantUsers = await IzendaUtility.GetUsers(domainTenant.Id, izendaToken);
+                if (allTenantUsers.Any(u => u.UserName.Equals(adUser.SamAccountName)))
                 {
-                    izendaUser.Roles.Add(new Role
-                    {
-                        Name = adGroup.Name
-                    });
+                    Logger.WarnFormat("Izenda user {0} is alredy exist", adUser.SamAccountName);
+                    return;
+                }
 
-                    if (!allRoles.Any(r => r.Name.Equals(adGroup.Name)))
+                // Assign tenant for izenda user
+                izendaUser.TenantDisplayId = tenant;
+                izendaUser.TenantName = tenant;
+
+                var allRoles = await IzendaUtility.GetRoles(domainTenant.Id, izendaToken);
+
+                foreach (var adGroup in adUser.Groups)
+                {
+                    if (adGroup.IsSelected)
                     {
-                        //determine roles
-                        CreateIzendaRole(tenant, adGroup.Name);
-                        Logger.InfoFormat("Save new role {0} successfully", adGroup.Name);
+                        izendaUser.Roles.Add(new Role
+                        {
+                            Name = adGroup.Name
+                        });
+
+                        if (!allRoles.Any(r => r.Name.Equals(adGroup.Name)))
+                        {
+                            //determine roles
+                            CreateIzendaRole(tenant, adGroup.Name);
+                            Logger.InfoFormat("Save new role {0} successfully", adGroup.Name);
+                        }
                     }
                 }
             }
 
+            //Save to DB
             UserIntegrationConfig.AddOrUpdateUser(izendaUser);
             Logger.InfoFormat("Save Izenda user {0} successfully", adUser.SamAccountName);
         }
@@ -392,7 +402,8 @@ namespace Mvc5StarterKit.Controllers
                 Name = roleName,
                 TenantUniqueName = tenant,
                 Active = true,
-                Permission = Izenda.BI.Framework.Utility.PermissionUtil.FullAccess
+                Deleted = false,
+                Permission = IzendaPermissionUtil.FullAccess,
             };
             RoleIntegrationConfig.AddOrUpdateRole(roleDetail);
         }

@@ -433,6 +433,7 @@
     <Compile Include="IzendaBoundary\WebAPIService.cs" />
     <Compile Include="IzendaConfig.cs" />
     <Compile Include="Managers\ADCachingManager.cs" />
+    <Compile Include="Managers\IzendaPermissionUtil.cs" />
     <Compile Include="Managers\IzendaSkinHelper.cs" />
     <Compile Include="Managers\IzendaTokenHelper.cs" />
     <Compile Include="Managers\TenantManager.cs" />

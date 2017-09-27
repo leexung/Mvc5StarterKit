@@ -61,7 +61,7 @@ namespace Mvc5StarterKit
             var user = await context.Users
                 .Include(x => x.Tenant)
                 .Where(x => x.UserName.Equals(username, StringComparison.InvariantCultureIgnoreCase))
-                .Where(x => x.Tenant.Name.Equals(domainName, StringComparison.InvariantCultureIgnoreCase))
+                .Where(x => x.Tenant.Name.Equals(domainName, StringComparison.InvariantCultureIgnoreCase) || x.Tenant.Name.Equals("System", StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync();
             return LDAPService.GetInstance().Authenticate(domainName, username, password) ? user : null;
         }
