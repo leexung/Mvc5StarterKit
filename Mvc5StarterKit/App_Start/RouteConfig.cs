@@ -11,6 +11,8 @@ namespace Mvc5StarterKit
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
+            var izendaApiPrefix = System.Configuration.ConfigurationManager.AppSettings["izendaapiprefix"];
+
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapMvcAttributeRoutes();
 
@@ -34,11 +36,11 @@ namespace Mvc5StarterKit
 
             routes.MapRoute(
                name: "CustomAuth",
-               url: "api/user/login",
+               url: $"{izendaApiPrefix}user/login",
                defaults: new { controller = "Home", action = "CustomAuth" }
            );
 
-            routes.IgnoreRoute("api/{*pathInfo}");
+            routes.IgnoreRoute($"{izendaApiPrefix}/{{*pathInfo}}");
 
             routes.MapRoute(
                 name: "Default",

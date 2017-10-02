@@ -427,6 +427,7 @@
     <Compile Include="IzendaBoundary\StringCipher.cs" />
     <Compile Include="IzendaBoundary\WebAPIService.cs" />
     <Compile Include="IzendaConfig.cs" />
+    <Compile Include="Managers\IzendaSkinHelper.cs" />
     <Compile Include="Managers\TenantManager.cs" />
     <Compile Include="Migrations\201611282113545_InitialCreate.cs" />
     <Compile Include="Migrations\201611282113545_InitialCreate.Designer.cs">
