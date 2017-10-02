@@ -13,13 +13,15 @@ namespace Mvc5StarterKit
         protected void Application_Start()
         {
             log4net.Config.XmlConfigurator.Configure();
-            log4net.LogManager.GetLogger(typeof(MvcApplication)).Debug("Starter Kit starts up...");
+            log4net.LogManager.GetLogger(typeof(MvcApplication)).Debug("Starter Kit is starting up...");
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             IzendaConfig.RegisterLoginLogic();
+
+            log4net.LogManager.GetLogger(typeof(MvcApplication)).Debug("Starter Kit has started up successfully.");
         }
 
         protected void Application_Error(object sender, EventArgs e)

@@ -1,39 +1,24 @@
-﻿@using Microsoft.AspNet.Identity
-@using Mvc5StarterKit.Models
-@{
+﻿@using Mvc5StarterKit.Managers
 
-    //Using tenantId, identify location of folder where the css resides for the given tenant and build path to CSS.
-    var currentTenant = User.Identity != null ? ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirstValue("tenantName") : null;
-    var izendaCssPath = currentTenant == null ? "" : string.Format("/Content/{0}/izenda-{1}.css", currentTenant.ToString().ToUpper(), currentTenant.ToString().ToLower());
-
-    if(!string.IsNullOrWhiteSpace(izendaCssPath))
-    {
-        if (!File.Exists(Server.MapPath(izendaCssPath)))
-        {
-            izendaCssPath = string.Empty;
-        }
-    }
-
-}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Izenda ASP.NET MVC StarterKit</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
     @* Apply css based on the users tenant *@
-    <link href="~/Scripts/izenda/izenda-ui.css" rel="stylesheet"> 
-    
+    <link href="~/Scripts/izenda/izenda-ui.css" rel="stylesheet">
+
     @*Add Custom CSS based on the tenantId and path set in izendaCssPath above *@
-    <link href=@izendaCssPath rel="stylesheet">
+    <link href=@IzendaSkinHelper.GetCurrentTenantCssPath() rel="stylesheet">
 
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
@@ -47,39 +32,42 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("ReadMe", "ReadMe", "Home")</li>
                     <li>@Html.ActionLink("API", "API", "Home")</li>
-                    
+
                     @* #izenda *@
-                    <li>@Html.ActionLink("Izenda", "Izenda", "Home")</li>
-                    <li>@Html.ActionLink("Settings", "Settings", "Home")</li>
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Izenda", "Izenda", "Home")</li>
+                        <li>@Html.ActionLink("Settings", "Settings", "Home")</li>
 
-                    @* Reports *@
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            Reports
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("New Report", "ReportDesigner", "Home")</li>
-                            <li>@Html.ActionLink("Report List", "Reports", "Home")</li>
-                            @* Add to report Viewer to Demo, hardcode Report ID to link user to a specific report - please update the report id with one created in your enviroment*@
-                            <li>@Html.ActionLink("Report Viewer", "ReportViewer", "Report", new { id = "[your report id]" }, null)</li>
-                            <li>@Html.ActionLink("Report Parts", "ReportParts", "Report")</li>
-                            
-                        </ul>
-                    </li>
+                        @* Reports *@
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                Reports
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("New Report", "ReportDesigner", "Home")</li>
+                                <li>@Html.ActionLink("Report List", "Reports", "Home")</li>
+                                @* Add to report Viewer to Demo, hardcode Report ID to link user to a specific report - please update the report id with one created in your enviroment*@
+                                <li>@Html.ActionLink("Report Viewer", "ReportViewer", "Report", new { id = "[your report id]" }, null)</li>
+                                <li>@Html.ActionLink("Report Parts", "ReportParts", "Report")</li>
 
-                    @* Dashboards *@
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            Dashboards
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("New Dashboard", "DashboardDesigner", "Home")</li>
-                            <li>@Html.ActionLink("Dashboard List", "Dashboards", "Home")</li>
-                            <li>@Html.ActionLink("Dashboard Viewer", "DashboardViewer", "Dashboard", new { id = "[your dashboard id]"}, null)</li>                            
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+
+                        @* Dashboards *@
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                Dashboards
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("New Dashboard", "DashboardDesigner", "Home")</li>
+                                <li>@Html.ActionLink("Dashboard List", "Dashboards", "Home")</li>
+                                <li>@Html.ActionLink("Dashboard Viewer", "DashboardViewer", "Dashboard", new { id = "[your dashboard id]" }, null)</li>
+                            </ul>
+                        </li>
+                    }
                 </ul>
 
                 @Html.Partial("_LoginPartial")
@@ -89,9 +77,7 @@
     <div class="container-fluid body-content">
         @RenderBody()
         <footer>
-            <span>&copy; @DateTime.Now.Year - Izenda </span> 
-            <br />
-            <span>version: 1.24.4</span>
+            <p>&copy; @DateTime.Now.Year - Izenda Integrated BI Platform - Version @IzendaSkinHelper.GetCurrentProductVersion()</p>
         </footer>
     </div>
 
@@ -100,7 +86,7 @@
     @* #izenda *@
     <script src="~/Scripts/alertify.js"></script>
     @Scripts.Render("~/bundles/izenda")
-    
+
     <script type="text/javascript">
         $(document).ready(function () {
             DoIzendaConfig();
