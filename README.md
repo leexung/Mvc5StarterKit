@@ -11,13 +11,14 @@
 ## Getting Started 
  Download the v2.3.1 (https://downloads.izenda.com/v2.3.1/) of the API and EmbeddedUI and copy the following:
 
-All files & folders in API\bin -> Mvc5StarterKit\IzendaReferences
+All files & folders inside:
+- API\bin -> Mvc5StarterKit\IzendaReferences
 
-API\Content -> Mvc5StarterKit\IzendaResources
-API\EmailTemplates -> Mvc5StarterKit\IzendaResources
-API\Export -> Mvc5StarterKit\IzendaResources
-
-EmbeddedUI -> Mvc5StarterKit\Scripts\izenda
+The folder itself for:
+- API\Content -> Mvc5StarterKit\IzendaResources
+- API\EmailTemplates -> Mvc5StarterKit\IzendaResources
+- API\Export -> Mvc5StarterKit\IzendaResources
+- EmbeddedUI -> Mvc5StarterKit\Scripts\izenda
 
 Open SSMS
 - Create a new database named Retail
