@@ -9,15 +9,16 @@
  :warning: **The MVC Kit is designed for demonstration purposes and should not be used as an “as-is” fully-integrated solution. You can use the kit for reference or a baseline but ensure that security and customization meet the standards of your company.**
  
 ## Getting Started 
- Download the v2.3.1 (https://downloads.izenda.com/v2.3.1/) of the API and EmbeddedUI and copy the following:
+ Download the v2.4.4 (https://downloads.izenda.com/v2.4.4/) of the API and EmbeddedUI and copy the following:
 
-All files & folders in API\bin -> Mvc5StarterKit\IzendaReferences
+All files & folders inside:
+- API\bin -> Mvc5StarterKit\IzendaReferences
 
-API\Content -> Mvc5StarterKit\IzendaResources
-API\EmailTemplates -> Mvc5StarterKit\IzendaResources
-API\Export -> Mvc5StarterKit\IzendaResources
-
-EmbeddedUI -> Mvc5StarterKit\Scripts\izenda
+The folder itself for:
+- API\Content -> Mvc5StarterKit\IzendaResources
+- API\EmailTemplates -> Mvc5StarterKit\IzendaResources
+- API\Export -> Mvc5StarterKit\IzendaResources
+- EmbeddedUI -> Mvc5StarterKit\Scripts\izenda
 
 Open SSMS
 - Create a new database named Retail
