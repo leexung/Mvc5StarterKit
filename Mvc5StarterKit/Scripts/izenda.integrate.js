@@ -120,6 +120,41 @@ var izendaInitReportPartDemo = function () {
     this.DoRender(successFunc);
 };
 
+var izendaInitReportPartUpdateResult = function (reportPartId, overridingFilterValue, container) {
+
+    function successFunc(data, status) {
+        console.info(data);
+        var currentUserContext = {
+            token: data.token
+        };
+
+        IzendaSynergy.setCurrentUserContext(currentUserContext);
+        IzendaSynergy.renderReportPart(document.getElementById(container), {
+            "id": reportPartId,
+            "overridingFilterValue": overridingFilterValue,
+        });
+    }
+
+    this.DoRender(successFunc);
+};
+
+var izendaRenderReportPart = function (reportPartId, container) {
+
+    function successFunc(data, status) {
+        console.info(data);
+        var currentUserContext = {
+            token: data.token
+        };
+
+        IzendaSynergy.setCurrentUserContext(currentUserContext);
+        IzendaSynergy.renderReportPart(document.getElementById(container), {
+            "id": reportPartId
+        });
+    }
+
+    this.DoRender(successFunc);
+};
+
 var izendaInitReport = function () {
 
     function successFunc(data, status) {

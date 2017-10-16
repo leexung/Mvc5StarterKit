@@ -543,6 +543,7 @@
     <Content Include="Views\Shared\Izenda_Layout.cshtml" />
     <Content Include="Views\Home\ReadMe.cshtml" />
     <Content Include="Views\Dashboard\DashboardViewer.cshtml" />
+    <Content Include="Views\Report\AdvancedReportParts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IzendaReferences\" />
