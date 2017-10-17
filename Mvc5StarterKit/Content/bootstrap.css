@@ -225,12 +225,14 @@ table {
 }
 
 @media print {
+    /* This comment was applied to fix https://izenda.atlassian.net/browse/IZ-18399
   * {
     color: #000 !important;
     text-shadow: none !important;
     background: transparent !important;
     box-shadow: none !important;
   }
+  */
   a,
   a:visited {
     text-decoration: underline;
