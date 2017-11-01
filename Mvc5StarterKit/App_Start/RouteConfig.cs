@@ -36,7 +36,7 @@ namespace Mvc5StarterKit
 
             routes.MapRoute(
                name: "CustomAuth",
-               url: $"{izendaApiPrefix}user/login",
+               url: $"{izendaApiPrefix}/user/login",
                defaults: new { controller = "Home", action = "CustomAuth" }
            );
 
