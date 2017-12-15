@@ -18,6 +18,7 @@ namespace Mvc5StarterKit.Controllers
         // show report Viewer by id
         public ActionResult ReportViewer(string id)
         {
+            ViewBag.p1Value = Request.QueryString["p1Value"];
             ViewBag.Id = id;
             return View();
         }
