@@ -171,13 +171,22 @@ var izendaInitReport = function () {
 };
 
 // Render report viewer to a <div> tag by report id
-var izendaInitReportViewer = function (reportId) {
+var izendaInitReportViewer = function (reportId, p1value) {
     function successFunc(data, status) {
         var currentUserContext = {
             token: data.token
         };
         IzendaSynergy.setCurrentUserContext(currentUserContext);
-        IzendaSynergy.renderReportViewerPage(document.getElementById('izenda-root'), reportId);
+        IzendaSynergy.renderReportViewerPage(
+            document.getElementById('izenda-root'), reportId,
+            {
+                overridingFilterValue: {
+                    p1value: p1Value
+                }
+            }
+        );
+    });
+        
     }
 
     this.DoRender(successFunc);
