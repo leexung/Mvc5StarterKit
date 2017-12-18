@@ -176,21 +176,16 @@ var izendaInitReportViewer = function (reportId, p1value) {
         var currentUserContext = {
             token: data.token
         };
+
         IzendaSynergy.setCurrentUserContext(currentUserContext);
-        IzendaSynergy.renderReportViewerPage(
-            document.getElementById('izenda-root'), reportId,
-            {
-                overridingFilterValue: {
-                    p1value: p1Value
-                }
+        IzendaSynergy.renderReportViewerPage(document.getElementById('izenda-root'), reportId, {
+            overridingFilterValue: {
+                p1value: p1value
             }
-        );
-    });
-        
+        });
     }
 
     this.DoRender(successFunc);
-
 };
 
 var izendaInitDashboard = function () {
@@ -205,7 +200,6 @@ var izendaInitDashboard = function () {
     }
 
     this.DoRender(successFunc);
-
 };
 
 // Render dashboard viewer to a <div> tag by dashboard id
@@ -233,7 +227,6 @@ var izendaInitReportDesigner = function () {
     }
 
     this.DoRender(successFunc);
-
 };
 
 var izendaInitNewDashboard = function () {
@@ -248,7 +241,6 @@ var izendaInitNewDashboard = function () {
     }
 
     this.DoRender(successFunc);
-
 };
 
 // Render report part
@@ -264,7 +256,6 @@ var izendaInitReportPartViewer = function (reportPartId) {
     }
 
     this.DoRender(successFunc);
-
 };
 
 var izendaInitReportPartExportViewer = function (reportPartId, token) {
