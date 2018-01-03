@@ -191,7 +191,7 @@ namespace Mvc5StarterKit.Controllers
 
                         izendaTenant.Name = tenant.Name;
                         izendaTenant.TenantID = tenant.Name;
-                        TenantIntegrationConfig.AddOrUpdateTenant(izendaTenant);
+                        TenantIntegrationConfig.AddTenant(izendaTenant);
                     }
 
                     //determine roles
@@ -221,7 +221,7 @@ namespace Mvc5StarterKit.Controllers
                         Name = roleDetail.Name
                     });
 
-                    RoleIntegrationConfig.AddOrUpdateRole(roleDetail);
+                    RoleIntegrationConfig.AddRole(roleDetail);
                     UserIntegrationConfig.AddOrUpdateUser(izendaUser);
 
                     user.Tenant = tenant;
