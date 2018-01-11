@@ -46,3 +46,8 @@ Icon?
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
+
+# Specific resources of Izenda
+/Mvc5StarterKit/Content
+/Mvc5StarterKit/EmailTemplates
+/Mvc5StarterKit/Export
