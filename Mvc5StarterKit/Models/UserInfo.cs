@@ -11,5 +11,8 @@ namespace Mvc5StarterKit.Models
 
         // This corresponds to the 'TenantID' field in the IzendaTenant table
         public string TenantUniqueName { get; set; } 
+
+        // Custom property
+        public string CustomerId { get; set; }
     }
 }
