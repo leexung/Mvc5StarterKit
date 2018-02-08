@@ -91,7 +91,10 @@
     </Reference>
     <Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.PostgreSQL.dll</HintPath>
-    </Reference>
+    </Reference>		
+	<Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
+      <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.Redshift.dll</HintPath>
+    </Reference>	
     <Reference Include="Izenda.BI.DataAdaptor.RDBMS.SQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.SQL.dll</HintPath>
     </Reference>
@@ -150,6 +153,9 @@
     <Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.PostgreSQL.dll</HintPath>
     </Reference>
+	<Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
+      <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.Redshift.dll</HintPath>
+    </Reference>	
     <Reference Include="Izenda.BI.QueryNormalizer.SQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.SQL.dll</HintPath>
     </Reference>
