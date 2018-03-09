@@ -9,7 +9,7 @@
  :warning: **The MVC Kit is designed for demonstration purposes and should not be used as an “as-is” fully-integrated solution. You can use the kit for reference or a baseline but ensure that security and customization meet the standards of your company.**
  
 ## Getting Started 
- Download the v2.6.17 (https://downloads.izenda.com/v2.6.17/) of the API and EmbeddedUI and copy the following:
+ Download the v2.6.20 (https://downloads.izenda.com/v2.6.20/) of the API and EmbeddedUI and copy the following:
 
 All files & folders inside:
 - API\bin -> Mvc5StarterKit\IzendaReferences
