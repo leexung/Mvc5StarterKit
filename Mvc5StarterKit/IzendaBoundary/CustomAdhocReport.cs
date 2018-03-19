@@ -1,14 +1,12 @@
-﻿using Izenda.BI.Framework.CustomConfiguration;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Izenda.BI.Framework.Models;
-using Izenda.BI.Framework.Models.Common;
 using System.ComponentModel.Composition;
+using System.Linq;
+using Izenda.BI.Framework.CustomConfiguration;
+using Izenda.BI.Framework.Models;
 using Izenda.BI.Framework.Models.ReportDesigner;
-using Izenda.BI.Framework.Components.QueryExpressionTree;
 using Izenda.BI.Framework.Utility;
+using Izenda.BI.Framework.Models.Contexts;
 
 namespace Mvc5StarterKit.IzendaBoundary
 {
@@ -19,99 +17,25 @@ namespace Mvc5StarterKit.IzendaBoundary
     public class CustomAdhocReport : DefaultAdHocExtension
     {
         /// <summary>
-        /// Override lookup filter data.
-        /// 
-        /// Requirement summary:
-        /// If logged user has role VP --> show all region
-        /// If logged user has role Manager --> show some regions ("South America", "North America")
-        /// If logged user has role Employee --> show only one region ("South America")
+        /// Adds custom formats for a specified data type.
         /// </summary>
-        /// <param name="filterField"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public override List<string> OnPostLoadFilterData(ReportFilterField filterField, List<string> data)
+        public override List<DataFormat> LoadCustomDataFormat()
         {
-            // override dropdown value based on user role for filter on view "OrderDetailsByRegion" and field "CountryRegionName"
-            if (filterField.SourceDataObjectName == "OrderDetailsByRegion" && filterField.SourceFieldName == "CountryRegionName"
-                && (HttpContext.Current.User.IsInRole("Manager") || HttpContext.Current.User.IsInRole("Employee")))
-            {
-                ///Clear existing value
-                data.Clear();
-
-                // override dropdown's value based on User role
-
-                //Manager, dropdown show "South America" and "North America"
-                if (HttpContext.Current.User.IsInRole("Manager"))
-                {
-                    data.Add("South America");
-                    data.Add("North America");
-                }
-
-                // Employee, dropdown show "South America" only.
-                if (HttpContext.Current.User.IsInRole("Employee"))
-                {
-                    data.Add("South America");
-                }
-            }
-            return base.OnPostLoadFilterData(filterField, data);
+            return CustomDataFormat.LoadCustomDataFormat();
         }
 
         /// <summary>
-        /// Override lookup filter data tree.
-        /// 
-        /// Requirement summary:
-        /// If logged user has role VP --> show all region
-        /// If logged user has role Manager --> show some regions ("South America", "North America")
-        /// If logged user has role Employy --> show only one region ("South America")
+        /// Sets custom filters which are hidden to the user of the interface.
         /// </summary>
-        /// <param name="fieldInfo"></param>
-        /// <returns></returns>
-        public override List<ValueTreeNode> OnLoadFilterDataTree(QuerySourceFieldInfo fieldInfo)
-        {
-            var result = new List<ValueTreeNode>();
-
-            if (fieldInfo.QuerySourceName == "OrderDetailsByRegion" && fieldInfo.Name == "CountryRegionName"
-                && (HttpContext.Current.User.IsInRole("Manager") || HttpContext.Current.User.IsInRole("Employee")))
-            {
-                //Node [All] and [Blank] are required for UI to render.
-                var rootNode = new ValueTreeNode { Text = "[All]", Value = "[All]" };
-                rootNode.Nodes = new List<ValueTreeNode>();
-                //rootNode.Nodes.Add(new ValueTreeNode { Text = "[Blank]", Value = "[Blank]" });
-
-
-                if (HttpContext.Current.User.IsInRole("Manager"))
-                {
-                    rootNode.Nodes.Add(new ValueTreeNode { Text = "South America", Value = "South America" });
-                    rootNode.Nodes.Add(new ValueTreeNode { Text = "North America", Value = "North America" });
-                }
-
-                if (HttpContext.Current.User.IsInRole("Employee"))
-                {
-                    rootNode.Nodes.Add(new ValueTreeNode { Text = "South America", Value = "South America" });
-                }
-
-                //else
-                //{
-                //    rootNode.Nodes.Add(new ValueTreeNode { Text = "Europe", Value = "Europe" });
-                //    rootNode.Nodes.Add(new ValueTreeNode { Text = "South America", Value = "South America" });
-                //    rootNode.Nodes.Add(new ValueTreeNode { Text = "North America", Value = "North America" });
-                //}
-
-                result.Add(rootNode);
-            }
-
-            return result;
-        }
-
         public override ReportFilterSetting SetHiddenFilters(SetHiddenFilterParam param)
         {
-            var filterFieldName = "ShipRegion";
+            var filterFieldName = "ShipCountry";
 
             Func<ReportFilterSetting, int, QuerySource, QuerySourceField, Guid, Relationship, int> addHiddenFilters = (result, filterPosition, querySource, field, equalOperator, rel) =>
             {
                 var firstFilter = new ReportFilterField
                 {
-                    Alias = $"ShipRegion{filterPosition}",
+                    Alias = $"ShipCountry{filterPosition}",
                     QuerySourceId = querySource.Id,
                     SourceDataObjectName = querySource.Name,
                     QuerySourceType = querySource.Type,
@@ -120,15 +44,14 @@ namespace Mvc5StarterKit.IzendaBoundary
                     DataType = field.DataType,
                     Position = ++filterPosition,
                     OperatorId = equalOperator,
-                    Value = "WA",
+                    Value = "USA",
                     RelationshipId = rel?.Id,
                     IsParameter = false,
                     ReportFieldAlias = null
                 };
-
                 var secondFilter = new ReportFilterField
                 {
-                    Alias = $"ShipRegion{filterPosition}",
+                    Alias = $"ShipCountry{filterPosition}",
                     QuerySourceId = querySource.Id,
                     SourceDataObjectName = querySource.Name,
                     QuerySourceType = querySource.Type,
@@ -137,7 +60,7 @@ namespace Mvc5StarterKit.IzendaBoundary
                     DataType = field.DataType,
                     Position = ++filterPosition,
                     OperatorId = equalOperator,
-                    Value = "[Blank]",
+                    Value = "Germany",
                     RelationshipId = rel?.Id,
                     IsParameter = false,
                     ReportFieldAlias = null
@@ -210,7 +133,7 @@ namespace Mvc5StarterKit.IzendaBoundary
                     {
                         position = addHiddenFilters(filterSetting, position, querySource, field, equalOperator, null);
                     }
-                    
+
                     foreach (var rel in rels)
                     {
                         // Loop thru all relationships that the query source is joined as primary and add the hidden field associated with each relationship

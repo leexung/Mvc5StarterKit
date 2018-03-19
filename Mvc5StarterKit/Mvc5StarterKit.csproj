@@ -91,10 +91,10 @@
     </Reference>
     <Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.PostgreSQL.dll</HintPath>
-    </Reference>		
-	<Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
+    </Reference>
+    <Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.Redshift.dll</HintPath>
-    </Reference>	
+    </Reference>
     <Reference Include="Izenda.BI.DataAdaptor.RDBMS.SQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.SQL.dll</HintPath>
     </Reference>
@@ -153,9 +153,9 @@
     <Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.PostgreSQL.dll</HintPath>
     </Reference>
-	<Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
+    <Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.Redshift.dll</HintPath>
-    </Reference>	
+    </Reference>
     <Reference Include="Izenda.BI.QueryNormalizer.SQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.SQL.dll</HintPath>
     </Reference>
@@ -374,6 +374,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IzendaBoundary\CustomAdhocReport.cs" />
+    <Compile Include="IzendaBoundary\CustomDataFormat.cs" />
     <Compile Include="IzendaBoundary\IzendaTokenAuthorization.cs" />
     <Compile Include="IzendaBoundary\IzendaUtility.cs" />
     <Compile Include="IzendaBoundary\Models\ConnectionDetail.cs" />
