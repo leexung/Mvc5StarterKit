@@ -150,10 +150,6 @@ namespace Mvc5StarterKit.IzendaBoundary
                 {
                     result.Logic = logic;
                 }
-                else
-                {
-                    result.Logic += $" AND {logic}";
-                }
 
                 return filterPosition;
             };
