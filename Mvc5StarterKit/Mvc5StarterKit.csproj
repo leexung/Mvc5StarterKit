@@ -91,10 +91,10 @@
     </Reference>
     <Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.PostgreSQL.dll</HintPath>
-    </Reference>		
-	<Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
+    </Reference>
+    <Reference Include="Izenda.BI.DataAdaptor.RDBMS.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.Redshift.dll</HintPath>
-    </Reference>	
+    </Reference>
     <Reference Include="Izenda.BI.DataAdaptor.RDBMS.SQL">
       <HintPath>IzendaReferences\Izenda.BI.DataAdaptor.RDBMS.SQL.dll</HintPath>
     </Reference>
@@ -108,6 +108,10 @@
     </Reference>
     <Reference Include="Izenda.BI.Exporting.Csv">
       <HintPath>IzendaReferences\Izenda.BI.Exporting.Csv.dll</HintPath>
+    </Reference>
+    <Reference Include="Izenda.BI.Exporting.Definition, Version=2.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>IzendaReferences\Izenda.BI.Exporting.Definition.dll</HintPath>
     </Reference>
     <Reference Include="Izenda.BI.Exporting.Excel">
       <HintPath>IzendaReferences\Izenda.BI.Exporting.Excel.dll</HintPath>
@@ -153,9 +157,9 @@
     <Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.PostgreSQL.dll</HintPath>
     </Reference>
-	<Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
+    <Reference Include="Izenda.BI.QueryNormalizer.PostgreSQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.Redshift.dll</HintPath>
-    </Reference>	
+    </Reference>
     <Reference Include="Izenda.BI.QueryNormalizer.SQL">
       <HintPath>IzendaReferences\Izenda.BI.QueryNormalizer.SQL.dll</HintPath>
     </Reference>
@@ -168,6 +172,14 @@
     <Reference Include="Izenda.BI.Resource, Version=0.22.15.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>IzendaReferences\Izenda.BI.Resource.dll</HintPath>
+    </Reference>
+    <Reference Include="Izenda.BI.StorageProvider, Version=2.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>IzendaReferences\Izenda.BI.StorageProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Izenda.BI.StorageProvider.FileSystem, Version=2.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>IzendaReferences\Izenda.BI.StorageProvider.FileSystem.dll</HintPath>
     </Reference>
     <Reference Include="Izenda.BI.SystemRepository, Version=0.22.15.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
