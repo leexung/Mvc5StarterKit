@@ -18,6 +18,7 @@ The folder itself for:
 - API\Content -> Mvc5StarterKit\IzendaResources
 - API\EmailTemplates -> Mvc5StarterKit\IzendaResources
 - API\Export -> Mvc5StarterKit\IzendaResources
+- API\Themes -> Mvc5StarterKit\IzendaResources
 - EmbeddedUI -> Mvc5StarterKit\Scripts\izenda
 
 Open SSMS
