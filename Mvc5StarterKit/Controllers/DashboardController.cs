@@ -11,7 +11,9 @@ namespace Mvc5StarterKit.Controllers
         // GET: DashboardViewer
         public ActionResult DashboardViewer(string id)
         {
+            var filters = Request.QueryString.ToString();
             ViewBag.Id = id;
+            ViewBag.filters = filters;
             return View();
         }
     }
