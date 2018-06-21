@@ -269,3 +269,13 @@ var izendaInitReportPartExportViewer = function (reportPartId, token) {
         useHash: false
     });
 };
+
+var getUrlVars = function (query) {
+  var vars = {}, hash;
+  var hashes = query.slice(0).split('&amp;');
+  for (var i = 0; i < hashes.length; i++) {
+    hash = hashes[i].split('=');
+    vars[hash[0]] = hash[1];
+  }
+  return vars;
+}
