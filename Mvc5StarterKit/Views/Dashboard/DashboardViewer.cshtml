@@ -6,7 +6,7 @@
 {
   <script type="text/javascript">
     $(document).ready(function () {
-			var filters = JSON.parse('@Html.Raw(WebUtility.HtmlDecode(ViewBag.filters))');
+      var filters = JSON.parse('@Html.Raw(WebUtility.HtmlDecode(ViewBag.filters))');
       izendaInitDashboardViewer('@ViewBag.Id', filters);
     });
   </script>
