@@ -171,18 +171,14 @@ var izendaInitReport = function () {
 };
 
 // Render report viewer to a <div> tag by report id
-var izendaInitReportViewer = function (reportId, p1value) {
+var izendaInitReportViewer = function (reportId, filters) {
     function successFunc(data, status) {
         var currentUserContext = {
             token: data.token
         };
 
         IzendaSynergy.setCurrentUserContext(currentUserContext);
-        IzendaSynergy.renderReportViewerPage(document.getElementById('izenda-root'), reportId, {
-            overridingFilterValue: {
-                p1value: p1value
-            }
-        });
+        IzendaSynergy.renderReportViewerPage(document.getElementById('izenda-root'), reportId, filters);
     }
 
     this.DoRender(successFunc);
@@ -203,12 +199,11 @@ var izendaInitDashboard = function () {
 };
 
 // Render dashboard viewer to a <div> tag by dashboard id
-var izendaInitDashboardViewer = function (dashboardId, queries) {
+var izendaInitDashboardViewer = function (dashboardId, filters) {
     function successFunc(data, status) {
         var currentUserContext = {
             token: data.token
         };
-		var filters = getUrlVars(queries);
         IzendaSynergy.setCurrentUserContext(currentUserContext);
         IzendaSynergy.renderDashboardViewerPage(document.getElementById('izenda-root'), dashboardId, filters);
     }
@@ -270,13 +265,3 @@ var izendaInitReportPartExportViewer = function (reportPartId, token) {
         useHash: false
     });
 };
-
-var getUrlVars = function (query) {
-  var vars = {}, hash;
-  var hashes = query.slice(0).split('&amp;');
-  for (var i = 0; i < hashes.length; i++) {
-    hash = hashes[i].split('=');
-    vars[hash[0]] = hash[1];
-  }
-  return vars;
-}

@@ -6,11 +6,15 @@
 
 @section scripts
 {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            izendaInitReportViewer('@ViewBag.Id', '@ViewBag.p1Value');
-        });
-    </script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+        var overridingFilterQueries = JSON.parse('@Html.Raw(WebUtility.HtmlDecode(ViewBag.overridingFilterQueries))');
+        izendaInitReportViewer('@ViewBag.Id', {
+          overridingFilterValue: overridingFilterQueries
+        }
+      );
+    });
+  </script>
 }
 
 <div class="loader" id="progressLoader"> </div>
