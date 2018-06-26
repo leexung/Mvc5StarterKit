@@ -7,6 +7,8 @@ namespace Mvc5StarterKit
     public static class IzendaConfig
     {
         ///<izendaIntegration>Required, Unique to Deployment Mode 3</izendaIntegration>
+        ///<summary>Register Logic for token validation and server-side token generation.
+        ///</summary>
         public static void RegisterLoginLogic()
         {
             //<summary>Logic to generate tokens for server-side interactions with Izenda</summary><remarks>This is used for exporting only</remarks>
