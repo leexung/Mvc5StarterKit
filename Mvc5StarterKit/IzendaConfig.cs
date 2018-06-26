@@ -6,9 +6,10 @@ namespace Mvc5StarterKit
 {
     public static class IzendaConfig
     {
+        ///<izendaIntegration>Required, Unique to Deployment Mode 3</izendaIntegration>
         public static void RegisterLoginLogic()
         {
-            //This is used for exporting only
+            //<summary>Logic to generate tokens for server-side interactions with Izenda</summary><remarks>This is used for exporting only</remarks>
             UserIntegrationConfig.GetAccessToken = (args) =>
             {
                 return IzendaBoundary.IzendaTokenAuthorization.GetToken(new Models.UserInfo()
@@ -17,7 +18,7 @@ namespace Mvc5StarterKit
                     TenantUniqueName = args.TenantId
                 });
             };
-
+            //<summary>Logic to validate tokens sent with requests to Izenda API</summary><remarks>Tokens are generated either from a RESTful API route (see <see cref="UserController.GenerateToken()"/>) in Host App and delivered to client or from server-side logic above.</remarks>
             UserIntegrationConfig.ValidateToken = (ValidateTokenArgs args) =>
             {
                 var token = args.AccessToken;

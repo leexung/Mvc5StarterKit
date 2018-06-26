@@ -531,6 +531,13 @@ namespace Mvc5StarterKit.Controllers
             return View();
         }
 
+        ///<izendaIntegration>Required, All Deployment Modes</izendaIntegration>
+        ///<summary>
+        /// Route to render Report Parts of Chart type.
+        ///</summary>
+        ///<remarks> Report Parts are rendered individually and compiled by the Izenda resources</remarks>
+        /// <param name="id">Report Part ID</param>
+        /// <param name="token">Token that can be used to identify Izenda User Profile. See <see See <see cref="IzendaConfig.RegisterLoginLogic()"/> for token generation details.</param>
         public ActionResult ReportPart(Guid id, string token)
         {
             ViewBag.Id = id;
@@ -538,6 +545,7 @@ namespace Mvc5StarterKit.Controllers
             return View();
         }
 
+        ///<izendaIntegration>Optional, All Deployment Modes</izendaIntegration>
         /// <summary>
         /// Create a custom route to intercept login requests for the Izenda API. This is needed for the 
         /// Izenda Copy Console as it will only authenticate against "api/user/login".
