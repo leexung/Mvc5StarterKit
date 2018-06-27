@@ -4,11 +4,12 @@
 
 @section scripts
 {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            izendaInitDashboardViewer('@ViewBag.Id');
-        });
-    </script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var filters = JSON.parse('@Html.Raw(WebUtility.HtmlDecode(ViewBag.filters))');
+      izendaInitDashboardViewer('@ViewBag.Id', filters);
+    });
+  </script>
 }
 
 <div class="loader" id="progressLoader"> </div>

@@ -171,18 +171,14 @@ var izendaInitReport = function () {
 };
 
 // Render report viewer to a <div> tag by report id
-var izendaInitReportViewer = function (reportId, p1value) {
+var izendaInitReportViewer = function (reportId, filters) {
     function successFunc(data, status) {
         var currentUserContext = {
             token: data.token
         };
 
         IzendaSynergy.setCurrentUserContext(currentUserContext);
-        IzendaSynergy.renderReportViewerPage(document.getElementById('izenda-root'), reportId, {
-            overridingFilterValue: {
-                p1value: p1value
-            }
-        });
+        IzendaSynergy.renderReportViewerPage(document.getElementById('izenda-root'), reportId, filters);
     }
 
     this.DoRender(successFunc);
@@ -203,13 +199,13 @@ var izendaInitDashboard = function () {
 };
 
 // Render dashboard viewer to a <div> tag by dashboard id
-var izendaInitDashboardViewer = function (dashboardId) {
+var izendaInitDashboardViewer = function (dashboardId, filters) {
     function successFunc(data, status) {
         var currentUserContext = {
             token: data.token
         };
         IzendaSynergy.setCurrentUserContext(currentUserContext);
-        IzendaSynergy.renderDashboardViewerPage(document.getElementById('izenda-root'), dashboardId);
+        IzendaSynergy.renderDashboardViewerPage(document.getElementById('izenda-root'), dashboardId, filters);
     }
 
     this.DoRender(successFunc);
