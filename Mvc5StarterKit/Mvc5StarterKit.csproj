@@ -390,7 +390,12 @@
     <Compile Include="IzendaBoundary\IzendaUtility.cs" />
     <Compile Include="IzendaBoundary\Models\ConnectionDetail.cs" />
     <Compile Include="IzendaBoundary\Models\ConnectionModel.cs" />
+    <Compile Include="IzendaBoundary\Models\Criteria\QuerySourceFieldPagedRequestModel.cs" />
     <Compile Include="IzendaBoundary\Models\DBSourceModel.cs" />
+    <Compile Include="IzendaBoundary\Models\ModelErrorModel.cs" />
+    <Compile Include="IzendaBoundary\Models\OperationResultModel.cs" />
+    <Compile Include="IzendaBoundary\Models\Paging\PagedResultModel.cs" />
+    <Compile Include="IzendaBoundary\Models\Paging\PagingInfoModel.cs" />
     <Compile Include="IzendaBoundary\Models\Permissions\Access\Access.cs" />
     <Compile Include="IzendaBoundary\Models\Permissions\Access\AccessDefaults.cs" />
     <Compile Include="IzendaBoundary\Models\Permissions\Access\AccessLimits.cs" />

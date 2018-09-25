@@ -12,12 +12,13 @@ using Mvc5StarterKit.IzendaBoundary;
 using System.Threading.Tasks;
 using Mvc5StarterKit.Models;
 using Mvc5StarterKit.IzendaBoundary.Models;
+using Mvc5StarterKit.IzendaBoundary.Models.Criteria;
 using log4net;
 using Mvc5StarterKit.IzendaBoundary.Models.Permissions;
 using IzendaFramework = Izenda.BI.Framework.Models.DBStructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Izenda.BI.Framework.Models;
+using Izenda.BI.RDBMS.Constants;
 
 namespace Mvc5StarterKit.Controllers
 {
@@ -290,8 +291,8 @@ namespace Mvc5StarterKit.Controllers
             }
 
             //Get connection detail by reloading the remote schema
-            //This will support the case when user add a table to database 
-            //But in Izenda it still not refresh in Available Data Sources yet
+            //This will support the case when a user adds a table to the database 
+            //But we must perform additional steps to successfully move the table from the available data sources to the visible data sources
             var connectionModel = await IzendaUtility.ReloadRemoteSchema(
                 new
                 {
@@ -300,45 +301,52 @@ namespace Mvc5StarterKit.Controllers
                     ServerTypeId = conn.ServerTypeId
                 }, token);
 
-            var querySourceCategories = connectionModel.DBSource.QuerySources;
-
-            var querySourceCategory = connectionModel.DBSource.QuerySources[0];
-
-            //keep available data sources
-            var querySources = querySourceCategory.QuerySources;
-
 
             #region update Connection Detail Model
 
-            //To add table,view,sp,function to Visible Data Sources, we only need to set the Selected flag to true
+            //The DBSource has the QuerySources sorted into categories based on schema and each schema has QuerySources sorted into types (table, view, stored procedure, function)
+            var querySources = connectionModel.DBSource.QuerySources.SelectMany(qs => qs.QuerySources);
 
-            //table
-            if (!string.IsNullOrEmpty(tableName))
+            foreach (var source in querySources)
             {
-                table = querySources.Where(q => q.Name == tableName).FirstOrDefault();
-                table.Selected = true;
-                needToUpdate = true;
-            }
-            //view
-            if (!string.IsNullOrEmpty(viewName))
-            {
-                view = querySources.Where(q => q.Name == viewName).FirstOrDefault();
-                view.Selected = true;
-                needToUpdate = true;
-            }
-            //sp
-            if (!string.IsNullOrEmpty(spName))
-            {
-                sp = querySources.Where(q => q.Name == spName).FirstOrDefault();
-                sp.Selected = true;
-                needToUpdate = true;
-            }
-            //function
-            if (!string.IsNullOrEmpty(functionName))
-            {
-                function = querySources.Where(q => q.Name == functionName).FirstOrDefault();
-                function.Selected = true;
-                needToUpdate = true;
+                //Create a new QuerySourceFieldPagedRequestModel as criteria for obtaining the fields for the QuerySource using the QuerySource ID and type
+                var req = new QuerySourceFieldPagedRequestModel()
+                {
+                    QuerySource = new QuerySourceModel()
+                    {
+                        Id = source.Id,
+                        Type = source.Type
+                    }
+                };
+
+                var result = await IzendaUtility.LoadQuerySourceFields(req, token);
+                source.QuerySourceFields = result.Result;
+                
+                if (new string[] { tableName, viewName, spName, functionName }.Any(s => !string.IsNullOrWhiteSpace(s) && s.Equals(source.Name)))
+                {
+                    switch(source.Type)
+                    {
+                        case SQLQuerySourceType.Table: table = source;
+                            break;
+                        case SQLQuerySourceType.View: view = source;
+                            break;
+                        case SQLQuerySourceType.Procedure: sp = source;
+                            break;
+                        case SQLQuerySourceType.Function: function = source;
+                            break;
+                        default:
+                            break;
+                    }
+                    //To add table,view,sp,function to visible Data Sources, we only need to set the Selected flag to true
+                    source.Selected = true;
+                    needToUpdate = true;
+                    //optionally set the query sources' fields' visibility and filterability if the automatic visibility/filterability option is not enabled
+                    //foreach (var field in source.QuerySourceFields)
+                    //{
+                    //    field.Visible = true;
+                    //    field.Filterable = true;
+                    //}
+                }
             }
 
             #endregion
@@ -351,7 +359,7 @@ namespace Mvc5StarterKit.Controllers
                 //POST /connection
                 await IzendaUtility.UpdateConnectionDetail(conn, token);
 
-                logger.Info("Update connnection visible data sources succesfully.");
+                logger.Info($"Succesfully updated visible data sources for connection [{connectionModel.Id}].");
 
                 //If we input RoleName, we will attach the added table,view,sp,function to this existing role
                 if (!string.IsNullOrEmpty(roleName))
@@ -361,14 +369,14 @@ namespace Mvc5StarterKit.Controllers
                     var roles = await IzendaUtility.GetRoles(tenantId, token);
 
                     //Check if role is existed
-                    var existedRole = roles.Where(r => r.Name == roleName).FirstOrDefault();
-                    if (existedRole != null)
+                    var existingRole = roles.Where(r => r.Name == roleName).FirstOrDefault();
+                    if (existingRole != null)
                     {
-                        logger.InfoFormat("Role = {0} is already existed => continue to update Data Model Permissions", roleName);
+                        logger.Info($"Role {roleName} is already exists => continue to update Data Model Permissions");
 
                         //Get role detail
                         //GET /role/{role_id}
-                        var role = await IzendaUtility.GetRole(existedRole.Id, token);
+                        var role = await IzendaUtility.GetRole(existingRole.Id, token);
 
                         #region update Data Model Permissions of role
 
@@ -378,49 +386,15 @@ namespace Mvc5StarterKit.Controllers
                             role.VisibleQuerySources = new List<QuerySourceModel>();
                         }
 
-                        //Check if the added table, view, sp, function already in VisibleQuerySources. If not existed, attach it to Role
-                        if (table != null)
+                        foreach(var source in new List<QuerySourceModel> { table, view, sp, function})
                         {
-                            if (role.VisibleQuerySources.Where(q => q.Id == table.Id).FirstOrDefault() == null)
+                            //Check if the added table, view, sp, function already in VisibleQuerySources. If it doesn't exist, attach it to the role
+                            if (source != null)
                             {
-                                role.VisibleQuerySources.Add(BuildQuerySourceForRole(table, querySources));
-                            }
-                            else
-                            {
-                                logger.InfoFormat("Table = {0} is already in the VisibleQuerySources of Role = {1}", table.Name, roleName);
-                            }
-                        }
-                        if (view != null)
-                        {
-                            if (role.VisibleQuerySources.Where(q => q.Id == view.Id).FirstOrDefault() == null)
-                            {
-                                role.VisibleQuerySources.Add(BuildQuerySourceForRole(view, querySources));
-                            }
-                            else
-                            {
-                                logger.InfoFormat("View = {0} is already in the VisibleQuerySources of Role = {1}", view.Name, roleName);
-                            }
-                        }
-                        if (sp != null)
-                        {
-                            if (role.VisibleQuerySources.Where(q => q.Id == sp.Id).FirstOrDefault() == null)
-                            {
-                                role.VisibleQuerySources.Add(BuildQuerySourceForRole(sp, querySources));
-                            }
-                            else
-                            {
-                                logger.InfoFormat("SP = {0} is already in the VisibleQuerySources of Role = {1}", sp.Name, roleName);
-                            }
-                        }
-                        if (function != null)
-                        {
-                            if (role.VisibleQuerySources.Where(q => q.Id == function.Id).FirstOrDefault() == null)
-                            {
-                                role.VisibleQuerySources.Add(BuildQuerySourceForRole(function, querySources));
-                            }
-                            else
-                            {
-                                logger.InfoFormat("Function = {0} is already in the VisibleQuerySources of Role = {1}", function.Name, roleName);
+                                if(role.VisibleQuerySources.Where(q => q.Id == source.Id).FirstOrDefault() == null)
+                                    role.VisibleQuerySources.Add(BuildQuerySourceForRole(source, querySources.ToList()));
+                                else
+                                    logger.Info($"{source.Type} {source.Name} is already in the VisibleQuerySources of Role {roleName}");
                             }
                         }
 
@@ -435,7 +409,7 @@ namespace Mvc5StarterKit.Controllers
                     }
                     else
                     {
-                        logger.ErrorFormat("Role = {0} is not existed. Please specify another existed role to update Data Model Permissions", roleName);
+                        logger.Error($"Role {roleName} does not exist. Please specify an existing role to update Data Model Permissions");
                         return false;
                     }
                 }
@@ -547,7 +521,7 @@ namespace Mvc5StarterKit.Controllers
         /// <returns>a json result indicating success or failure</returns>
         public ActionResult CustomAuth(string username, string password)
         {
-            OperationResult authResult;
+            OperationResultModel authResult;
             var serializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
             var jsonResult = "";
 
@@ -568,12 +542,12 @@ namespace Mvc5StarterKit.Controllers
                     Token = token
                 };
 
-                authResult = new OperationResult { Success = true, Messages = null, Data = accessToken };
+                authResult = new OperationResultModel { Success = true, Messages = null, Data = accessToken };
                 jsonResult = JsonConvert.SerializeObject(authResult, serializerSettings);
                 return Content(jsonResult, "application/json");
             }
 
-            authResult = new OperationResult { Success = false, Messages = null, Data = null };
+            authResult = new OperationResultModel { Success = false, Messages = null, Data = null };
             jsonResult = JsonConvert.SerializeObject(authResult, serializerSettings);
             return Content(jsonResult, "application/json");
         }

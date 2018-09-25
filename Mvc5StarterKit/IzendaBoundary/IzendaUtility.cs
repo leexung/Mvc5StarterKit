@@ -1,5 +1,7 @@
 ﻿using Mvc5StarterKit.IzendaBoundary.Models;
 using Mvc5StarterKit.IzendaBoundary.Models.Permissions;
+using Mvc5StarterKit.IzendaBoundary.Models.Criteria;
+using Mvc5StarterKit.IzendaBoundary.Models.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +38,13 @@ namespace Mvc5StarterKit.IzendaBoundary
         {
             string action = "connection";
             await WebAPIService.Instance.PostAsync(action, payload, authToken);
+        }
+
+        public static async Task<PagedResultModel<List<QuerySourceFieldModel>>> LoadQuerySourceFields(QuerySourceFieldPagedRequestModel criteria, string authToken)
+        {
+            string action = "dataModel/loadQuerySourceFields";
+            var QuerySourceFields = await WebAPIService.Instance.PostReturnValueAsync<PagedResultModel<List<QuerySourceFieldModel>>, QuerySourceFieldPagedRequestModel>(action, criteria, authToken);
+            return QuerySourceFields;
         }
 
         public static async Task SaveRole(RoleDetail payload, string authToken)
