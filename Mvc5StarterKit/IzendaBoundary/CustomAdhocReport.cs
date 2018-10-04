@@ -15,7 +15,7 @@ namespace Mvc5StarterKit.IzendaBoundary
     /// <summary>
     /// This is the Custom AdhocExtension, it will override the lookup filter values, hidden filter, ....
     /// </summary>
-    [Export(typeof(IAdHocExtension))]
+    // [Export(typeof(IAdHocExtension))]
     public class CustomAdhocReport : DefaultAdHocExtension
     {
         /// <summary>
