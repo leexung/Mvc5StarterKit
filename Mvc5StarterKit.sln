@@ -1,22 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc5StarterKit", "Mvc5StarterKit\Mvc5StarterKit.csproj", "{51F83CB6-167B-4789-8BE2-63970FFB9D44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Debug|x64.Build.0 = Debug|Any CPU
 		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Release|x64.ActiveCfg = Release|Any CPU
+		{51F83CB6-167B-4789-8BE2-63970FFB9D44}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72D3AC65-AF3C-4CB4-B7C8-FE86BB64D048}
 	EndGlobalSection
 EndGlobal
