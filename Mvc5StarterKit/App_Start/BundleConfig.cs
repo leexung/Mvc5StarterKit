@@ -31,7 +31,7 @@ namespace Mvc5StarterKit
                        "~/Scripts/izenda/izenda_ui.js",
                        "~/Scripts/izenda.integrate.js",
                        "~/Scripts/izenda.utils.js",
-                       "~/Scripts/izenda/customchart.js"));
+                       "~/Scripts/izenda/izenda_visualizations.js"));
             
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
